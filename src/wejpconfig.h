@@ -55,4 +55,5 @@ int cfg_get_key_value_from_string(ConfigFile cf, char *key,char *str[],int tag,c
 int cfg_check_sys_config_file(char *filename);
 int check_crc_file(char *filename);
 void get_array_from_conf_str(char **type,char *key,ConfigFile cf);
+void get_array_from_conf_int(int *date,char *key,ConfigFile cf);
 #endif

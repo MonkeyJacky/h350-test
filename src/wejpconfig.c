@@ -41,6 +41,23 @@ void get_array_from_conf_str(char **type,char *key,ConfigFile cf)
 
 	cfg_get_key_value_from_string(cf, key,test_str_,TAG,MAXEXTNUM);
 }
+void get_array_from_conf_int(int *date,char *key,ConfigFile cf)
+{
+  char test_str[MAXEXTNUM][1024];
+  char *test_str_[MAXEXTNUM];
+  int i = 0;
+  for(i = 0 ; i < MAXEXTNUM; i ++)
+  {
+    test_str_[i] = test_str[i];
+  }
+  int ret = 0;
+  memset(test_str,0x00,MAXEXTNUM*1024);
+  ret = cfg_get_key_value_from_string(cf, key,test_str_,TAG,MAXEXTNUM);
+  for(i = 0; i < ret; i ++)
+  {
+    date[i] = atoi(test_str_[i]);
+  }
+}
 /* Returns the complete path to ~/"filename" */
 char *cfg_get_path_to_config_file(char *filename)
 {

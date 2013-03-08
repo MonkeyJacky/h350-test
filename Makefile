@@ -12,12 +12,12 @@ OBJS=
 
 all: $(BINARY)
 
-OBJECTFILES=$(OBJS)main.o $(OBJS)wejpconfig.o $(OBJS)crc.o
+OBJECTFILES=$(OBJS)main.o $(OBJS)wejpconfig.o $(OBJS)crc.o $(OBJS)sdl_shape.o
 	
 $(BINARY): $(OBJECTFILES)
 	@echo -e "Linking \033[1m$(BINARY)\033[0m"
 	$(CC) -o $(BINARY) $(OBJECTFILES) $(LDFLAG) 
-#	mipsel-linux-strip $(BINARY) $(BINARY)
+	#mipsel-linux-strip $(BINARY) $(BINARY)
 
 %.o: src/%.c
 	@echo -e "Compiling \033[1m$<\033[0m"

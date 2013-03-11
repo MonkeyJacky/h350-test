@@ -3,16 +3,58 @@
 
    ------------------------------------------------------*/
 
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
+#include "sdl_shape.h"
+#include "debug.h"
 
 static int pen_width;  //the shape width
 
 static Uint32 pen_color;  //the shape color
+static SDL_Surface *screen = NULL;
 
+void sdl_flip_screen(void)
+{
+    SDL_Flip(screen);
+}
+//sdl init
+int init_sdl(void)
+{
+    if( SDL_Init( SDL_INIT_VIDEO ) == -1 )
+    {
+	debug_print("SDL_Init(SDL_INIT_VIDEO) FAIL!\n");
+	return -1;
+    }
+
+    SDL_ShowCursor(0);
+
+    screen = SDL_SetVideoMode( 320, 240, 32, SDL_SWSURFACE );
+
+    //If there was an error in setting up the screen
+    if( screen == NULL )
+    {
+	debug_print("SDL_SetVideoMode FAIL!\n");
+	return -1;
+    }
+
+    //Initialize SDL_ttf
+    if( TTF_Init() == -1 )
+    {
+	debug_print("TTF_Init FAIL!\n");
+	//        return -1;
+    }
+
+    /*font = TTF_OpenFont(FONT_PATH,18);*/
+    /*background = IMG_Load(WHITE_BACKGROUND);*/
+    /*lcd_test_pic = IMG_Load(LCD_TEST_PIC);*/
+    /*TTF_SetFontStyle(font,TTF_STYLE_BOLD);*/
+    return 0;
+}
 //when we draw a shape we must init this
-void sdl_set_pen(SDL_Color *color, int w, SDL_Surface *screen)
+void sdl_draw_a_pic(SDL_Surface* img, SDL_Rect *src_rect, SDL_Rect *dst_rect)
+{
+    SDL_BlitSurface(img,src_rect,screen,dst_rect);
+}
+
+void sdl_set_pen(SDL_Color *color, int w)
 {
   pen_color  = SDL_MapRGB(screen->format, color->r, color->g, color->b);
   pen_width = w;
@@ -63,7 +105,7 @@ static void put_pixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 }
 
 /* rect draw functions */
-void sdl_draw_rect(SDL_Surface *screen, SDL_Rect *rect)
+void sdl_draw_rect(SDL_Rect *rect)
 {
   int i;
   int j;
@@ -87,7 +129,7 @@ void sdl_draw_rect(SDL_Surface *screen, SDL_Rect *rect)
   }
 }
 
-void sdl_draw_rect_solid(SDL_Surface *screen, SDL_Rect *rect)
+void sdl_draw_rect_solid(SDL_Rect *rect)
 {
   int i;
   int j;

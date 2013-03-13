@@ -9,6 +9,7 @@
 #include "lcd_test.h"
 #include "tfcard_test.h"
 #include "battery_test.h"
+#include "internal_card_test.h"
 #include "debug.h"
 #include "sdl_shape.h"
 
@@ -45,11 +46,12 @@ void test_loop(struct test_Parameters *test_para,int num)
     else if(!strcmp(test_para->test_order[num],"battery_voltage"))
     {
 	debug_print("This is battery valtage test!\n");
-	battery_voltage_test();
+	/*battery_voltage_test();*/
     }
     else if(!strcmp(test_para->test_order[num],"internal_card"))
     {
 	debug_print("This is internal_card test!\n");
+	/*internal_card_test();*/
     }
     else if(!strcmp(test_para->test_order[num],"hdmi"))
     {

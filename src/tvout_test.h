@@ -1,6 +1,8 @@
 #ifndef _TVOUT_TEST_H_
 #define _TVOUT_TEST_H_
 
+#include "init_parameters.h"
+
 #define PANEL_MODE_LCD 0
 #define HDMI_SET_OFF 0
 #define HDMI_SET_ON 1
@@ -11,7 +13,7 @@
 #define FRAME_BUFFER_DEV "/dev/fb0"
 #define FBIO_MODE_SWITCH 0x46a5
 
-int hdmi_test(void);
-int avout_test(void);
+int hdmi_test(struct test_Parameters *test_para);
+int avout_test(struct test_Parameters *test_para);
 
 #endif

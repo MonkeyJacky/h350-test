@@ -54,6 +54,6 @@ int   cfg_add_key_if_not_present(ConfigFile *cf, char *key, char *value);
 int cfg_get_key_value_from_string(ConfigFile cf, char *key,char *str[],int tag,char item_num);
 int cfg_check_sys_config_file(char *filename);
 int check_crc_file(char *filename);
-void get_array_from_conf_str(char **type,char *key,ConfigFile cf);
-void get_array_from_conf_int(int *date,char *key,ConfigFile cf);
+int get_array_from_conf_str(char **type,int type_size,char *key,ConfigFile cf);
+int get_array_from_conf_int(int *data,int data_size,char *key,ConfigFile cf);
 #endif

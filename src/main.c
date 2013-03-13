@@ -14,74 +14,47 @@
 #include "sound_test.h"
 #include "debug.h"
 #include "sdl_shape.h"
+#include "init_parameters.h"
 
-void test_loop(struct test_Parameters *test_para,int num)
+typedef struct{
+    unsigned char* item_key_word;
+    int (*item_testing_func)(struct test_Parameters *test_para);
+}test_orders_;
+
+test_orders_ test_order_array[] =
 {
-    if(!strcmp(test_para->test_order[num],"lcd"))
+    {"lcd",lcd_test},
+    {"keypad",key_test},
+    {"joystick",joystick_test},
+    {"wifi",wifi_test},
+    {"tfcard",tfcard_test},
+    {"bat-voltage",battery_voltage_test},
+    {"internal_card",internal_card_test},
+    {"hdmi",hdmi_test},
+    {"avout",avout_test},
+    {"speaker",speaker_test},
+    {"headphone",hp_test},
+};
+
+void test_loop(struct test_Parameters *test_para,int num,int order_array_size)
+{
+    int i;
+
+    for(i = 0;i < order_array_size; i++)
     {
-	debug_print("This is lcd test!\n");
-	/*lcd_test();*/
-	/*system("echo 50 > /proc/jz/lcd_backlight");*/
+	if(!strcmp(test_para->test_order[num],test_order_array[i].item_key_word))
+	{
+	    debug_print("This is %s test!\n",test_order_array[i].item_key_word);
+	    test_order_array[i].item_testing_func(test_para);
+	}
     }
-    else if(!strcmp(test_para->test_order[num],"keypad"))
-    {
-	debug_print("This is keypad test!\n");
-	/*key_test(test_para);*/
-	/*sleep(5);*/
-    }
-    else if(!strcmp(test_para->test_order[num],"joystick"))
-    {
-	debug_print("This is joystick test!\n");
-	/*joystick_test(test_para);*/
-	/*sleep(5);*/
-    }
-    else if(!strcmp(test_para->test_order[num],"wifi"))
-    {
-	debug_print("This is wifi test!\n");
-	/*wifi_test();*/
-    }
-    else if(!strcmp(test_para->test_order[num],"tfcard"))
-    {
-	debug_print("This is tfcard test!\n");
-	/*tfcard_test();*/
-    }
-    else if(!strcmp(test_para->test_order[num],"battery_voltage"))
-    {
-	debug_print("This is battery valtage test!\n");
-	/*battery_voltage_test();*/
-    }
-    else if(!strcmp(test_para->test_order[num],"internal_card"))
-    {
-	debug_print("This is internal_card test!\n");
-	/*internal_card_test();*/
-    }
-    else if(!strcmp(test_para->test_order[num],"hdmi"))
-    {
-	debug_print("This is hdmi test!\n");
-	/*hdmi_test();*/
-    }
-    else if(!strcmp(test_para->test_order[num],"avout"))
-    {
-	debug_print("This is avout test!\n");
-	/*avout_test();*/
-    }
-    else if(!strcmp(test_para->test_order[num],"speaker"))
-    {
-	debug_print("This is speaker test!\n");
-	/*speaker_test();*/
-    }
-    else if(!strcmp(test_para->test_order[num],"headphone"))
-    {
-	debug_print("This is headphone test!\n");
-	/*hp_test();*/
-    }
-    else;
 }
 
 int main(void)
 {
     struct test_Parameters test_para;
     int i;
+    int test_order_array_size = 0;
 
     if (init_res(&test_para) < 0)
 	exit(0);
@@ -92,10 +65,15 @@ int main(void)
     if (init_sdl() < 0)
 	exit(0);
 
-    if(test_para.total_num > 0)
+    test_order_array_size = sizeof(test_order_array) / sizeof(test_orders_);
+    if(test_para.total_num > 0 && test_para.total_num <= test_order_array_size)
     {
 	for(i = 0; i < test_para.total_num; i++)
-	    test_loop(&test_para,i);
+	    test_loop(&test_para,i,test_order_array_size);
+    }
+    else
+    {
+	debug_print("Get test order num error!\n");
     }
 
     deinit_res(&test_para);

@@ -37,7 +37,7 @@ static int get_bat_val(void)
     return (mvolts&0x0000ffff);
 }
 
-int battery_voltage_test(void)
+int battery_voltage_test(struct test_Parameters *test_para)
 {
     int bat_test_loop = 1;
     int count = 0;

@@ -114,7 +114,7 @@ static int connection_loop(struct Wifi_parameters *wifi_para)
 	return False;
 }
 
-int wifi_test()
+int wifi_test(struct test_Parameters *test_para)
 {
     struct Wifi_parameters wifi_para;
     int ret = 0;

@@ -25,38 +25,68 @@
 #include <string.h>
 #include "wejpconfig.h"
 #include "crc.h"
+#include "debug.h"
 #include <unistd.h>
 
 #define MAX_LINE_LENGTH 1024
-#define MAXEXTNUM 50
+#define MAX_CHAR_LENGTH 256
 #define TAG ','
-void get_array_from_conf_str(char **type,char *key,ConfigFile cf)
+int get_array_from_conf_str(char **type,int type_size,char *key,ConfigFile cf)
 {
-	char *test_str_[MAXEXTNUM];
+	char **test_str_;
 	int i = 0;
-	for(i = 0 ; i < MAXEXTNUM; i ++)
+	int ret = 0;
+	test_str_ = malloc(sizeof(char *) * type_size);
+	if(!test_str_)
 	{
-		test_str_[i] = type[i];
+	    debug_print("%s %d malloc error!\n",__FILE__,__LINE__);
+	    return CFG_ERROR;
 	}
 
-	cfg_get_key_value_from_string(cf, key,test_str_,TAG,MAXEXTNUM);
+	for(i = 0 ; i < type_size; i ++)
+	{
+	    test_str_[i] = type[i];
+	}
+
+	ret = cfg_get_key_value_from_string(cf, key,test_str_,TAG,type_size);
+	if(ret < 0)
+	    return CFG_ERROR;
+
+	return CFG_SUCCESS;
 }
-void get_array_from_conf_int(int *date,char *key,ConfigFile cf)
+int get_array_from_conf_int(int *data,int data_size,char *key,ConfigFile cf)
 {
-  char test_str[MAXEXTNUM][1024];
-  char *test_str_[MAXEXTNUM];
+  char **test_str_;
   int i = 0;
-  for(i = 0 ; i < MAXEXTNUM; i ++)
-  {
-    test_str_[i] = test_str[i];
-  }
   int ret = 0;
-  memset(test_str,0x00,MAXEXTNUM*1024);
-  ret = cfg_get_key_value_from_string(cf, key,test_str_,TAG,MAXEXTNUM);
+  test_str_ = malloc(sizeof(char *) * data_size);
+  if(!test_str_)
+  {
+      debug_print("%s %d malloc error!\n",__FILE__,__LINE__);
+      return CFG_ERROR;
+  }
+
+  for(i = 0 ; i < data_size; i ++)
+  {
+    test_str_[i] = malloc(sizeof(char) * MAX_CHAR_LENGTH);
+    if(!test_str_[i])
+    {
+	debug_print("%s %d malloc error!\n",__FILE__,__LINE__);
+	return CFG_ERROR;
+    }
+    memset(test_str_[i],0,MAX_CHAR_LENGTH);
+  }
+
+  ret = cfg_get_key_value_from_string(cf, key,test_str_,TAG,data_size);
+  if(ret < 0)
+      return CFG_ERROR;
+
   for(i = 0; i < ret; i ++)
   {
-    date[i] = atoi(test_str_[i]);
+    data[i] = atoi(test_str_[i]);
   }
+
+  return CFG_SUCCESS;
 }
 /* Returns the complete path to ~/"filename" */
 char *cfg_get_path_to_config_file(char *filename)
@@ -85,17 +115,17 @@ int cfg_check_sys_config_file(char *filename)
 	int  result = CFG_ERROR;
 	int ret;
 
-	printf("filename is %s \n",filename);
+	debug_print("filename is %s \n",filename);
 	if(access(filename,W_OK) != 0)     //check /usr/etc/snk_desktop/value_store.conf
 	{
-		printf("\nstore_value.conf cannot write,\n the configfs maybe error!\n");	
+		debug_print("\nstore_value.conf cannot write,\n the configfs maybe error!\n");	
 		return CFG_ERROR;
 	}
 
 	file = fopen(filename, "r");
 	if (file == NULL)
 	{
-		printf("The file is not exist,copy a new one!\n");
+		debug_print("The file is not exist,copy a new one!\n");
 		//system("/usr/local/snk_desktop/backup.sh");  //by allen
 		//run_command("./remount.sh",NULL,REMOUNT_DIR);
 		result = CFG_ERROR;
@@ -108,7 +138,7 @@ int cfg_check_sys_config_file(char *filename)
 			result = CFG_SUCCESS;
 		else
 		{
-			printf("%s  %d  CRC ERROR!Restore the config file now!\n",__FILE__,__LINE__);
+			debug_print("%s  %d  CRC ERROR!Restore the config file now!\n",__FILE__,__LINE__);
 			system("/usr/local/snk_desktop/backup.sh");
 			add_crc_file(filename);
 			ret = check_file_crc(filename);
@@ -146,12 +176,12 @@ int check_crc_file(char *filename)
 	ret = check_file_crc(filename);
 	if(ret)
 	{
-		printf("CRC OK!\n");
+		debug_print("CRC OK!\n");
 		return CFG_SUCCESS;
 	}
 	else
 	{
-		printf("CRC ERROR!\n");
+		debug_print("CRC ERROR!\n");
 		remove(filename);
 		return CFG_ERROR;
 	}
@@ -285,7 +315,7 @@ int cfg_read_config_file(ConfigFile *cf, char *filename)
 		}
 		fclose(file);
 	} else {
-		/*printf("config: Cannot open config file: %s\n", filename);*/
+		/*debug_print("config: Cannot open config file: %s\n", filename);*/
 		result = CFG_ERROR;
 	}
 	return result;
@@ -304,7 +334,7 @@ int cfg_write_config_file(ConfigFile *cf, char *filename)
 			snprintf(buffer, MAX_LINE_LENGTH, "%s=%s\n", cf->key[i], cf->value[i]);
 			if (!fwrite(buffer, strlen(buffer) * sizeof(char), 1, file)) {
 				result = CFG_ERROR;
-				printf("config: ERROR: Failed writing configuration file.\n");
+				debug_print("config: ERROR: Failed writing configuration file.\n");
 				break;
 			}
 			i++;
@@ -315,7 +345,7 @@ int cfg_write_config_file(ConfigFile *cf, char *filename)
 		add_crc_file(filename);
 	} 
 	else {
-		printf("config: Failed opening %s for write access.\n", filename);
+		debug_print("config: Failed opening %s for write access.\n", filename);
 		result = CFG_ERROR;
 	}
 	return result;
@@ -323,8 +353,10 @@ int cfg_write_config_file(ConfigFile *cf, char *filename)
 
 int cfg_get_key_value_calculate_tag_num(ConfigFile cf, char *key,int tag,int item_num,int *offset)
 {
-  char *result;
+  char *result = NULL;
   result = cfg_get_key_value(cf,key);
+  if(!result)
+      return CFG_ERROR;
   int i = 0;
   char *ptr;
   ptr = strchr(result,tag);
@@ -340,10 +372,14 @@ int cfg_get_key_value_from_string(ConfigFile cf, char *key,char *str[],int tag,c
 {
   int offset[1024];
   memset(offset,0x00,1024);
-  char *result;
+  char *result = NULL;
   result = cfg_get_key_value(cf,key);
+  if(!result)
+      return CFG_ERROR;
   int ret = 0;
   ret = cfg_get_key_value_calculate_tag_num(cf,key,tag,item_num,offset);
+  if(ret < 0)
+      return CFG_ERROR;
   ret = (ret < item_num)? ret : item_num;
   int i = 0;
   for(i = 0; i < ret; i++)
@@ -365,7 +401,7 @@ int  cfg_get_key_value_to_int(ConfigFile cf, char *key)
   if(result)
     ret = atoi(result);
   else
-    ret = 0;
+    ret = CFG_ERROR;
   return ret;
 }
 float  cfg_get_key_value_to_float(ConfigFile cf, char *key)

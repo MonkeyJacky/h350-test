@@ -77,7 +77,7 @@ static int test_hdmi_loop(void)
     return True;
 }
 
-int hdmi_test(void)
+int hdmi_test(struct test_Parameters *test_para)
 {
     if (test_hdmi_loop() < 0)
 	return False;
@@ -122,7 +122,7 @@ static int get_av_out_mode()
     return avout_mode;
 }
 
-int avout_test(void)
+int avout_test(struct test_Parameters *test_para)
 {
     int avout_loop = 1;
     if(init_av_dev() < 0)

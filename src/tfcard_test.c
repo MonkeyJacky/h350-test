@@ -62,7 +62,7 @@ static int check_tfcard_info()
 	return False;
 }
 
-int tfcard_test(void)
+int tfcard_test(struct test_Parameters *test_para)
 {
     int once = 1;
     int tfcard_loop = 1;

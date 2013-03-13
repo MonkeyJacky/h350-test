@@ -27,15 +27,32 @@ int init_res(struct test_Parameters *test_para)
     }
 
     test_para->total_num = cfg_get_key_value_to_int(test_cf,TOTAL_NUM);
+    printf("test_para->total_num is %d\n",test_para->total_num);
+    if(test_para->total_num < 0)
+    {
+	debug_print("get total_num error!\n");
+	return False;
+    }
     test_para->test_order = malloc(sizeof(char*) * test_para->total_num);
 
     test_para->key_num = cfg_get_key_value_to_int(test_cf,KEY_NUM);
+    printf("test_para->key_num is %d\n",test_para->key_num);
+    if(test_para->key_num < 0)
+    {
+	debug_print("get key_num error!\n");
+	return False;
+    }
     test_para->key_rect_array.x = malloc(sizeof(int) * test_para->key_num);
     test_para->key_rect_array.y = malloc(sizeof(int) * test_para->key_num);
     test_para->key_rect_array.w = malloc(sizeof(int) * test_para->key_num);
     test_para->key_rect_array.h = malloc(sizeof(int) * test_para->key_num);
 
     test_para->joykey_num = cfg_get_key_value_to_int(test_cf,JOY_KEY_NUM);
+    if(test_para->joykey_num < 0)
+    {
+	debug_print("get joykey_num error!\n");
+	return False;
+    }
     test_para->joykey_rect_array.x = malloc(sizeof(int) * test_para->joykey_num);
     test_para->joykey_rect_array.y = malloc(sizeof(int) * test_para->joykey_num);
     test_para->joykey_rect_array.w = malloc(sizeof(int) * test_para->joykey_num);
@@ -46,25 +63,34 @@ int init_res(struct test_Parameters *test_para)
 	test_para->test_order[i] = malloc(sizeof(char) * MAX_SIZE);
     }
 
-    get_array_from_conf_str(test_para->test_order,TEST_ORDER,test_cf);
-    get_array_from_conf_int(test_para->key_rect_array.x,RECT_ARRAY_X,test_cf);
-    get_array_from_conf_int(test_para->key_rect_array.y,RECT_ARRAY_Y,test_cf);
-    get_array_from_conf_int(test_para->key_rect_array.w,RECT_ARRAY_W,test_cf);
-    get_array_from_conf_int(test_para->key_rect_array.h,RECT_ARRAY_H,test_cf);
-    get_array_from_conf_int(test_para->joykey_rect_array.x,JOYRECT_ARRAY_X,test_cf);
-    get_array_from_conf_int(test_para->joykey_rect_array.y,JOYRECT_ARRAY_Y,test_cf);
-    get_array_from_conf_int(test_para->joykey_rect_array.w,JOYRECT_ARRAY_W,test_cf);
-    get_array_from_conf_int(test_para->joykey_rect_array.h,JOYRECT_ARRAY_H,test_cf);
+    if(get_array_from_conf_str(test_para->test_order,test_para->total_num,TEST_ORDER,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->key_rect_array.x,test_para->key_num,RECT_ARRAY_X,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->key_rect_array.y,test_para->key_num,RECT_ARRAY_Y,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->key_rect_array.w,test_para->key_num,RECT_ARRAY_W,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->key_rect_array.h,test_para->key_num,RECT_ARRAY_H,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->joykey_rect_array.x,test_para->joykey_num,JOYRECT_ARRAY_X,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->joykey_rect_array.y,test_para->joykey_num,JOYRECT_ARRAY_Y,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->joykey_rect_array.w,test_para->joykey_num,JOYRECT_ARRAY_W,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->joykey_rect_array.h,test_para->joykey_num,JOYRECT_ARRAY_H,test_cf) < 0)
+	return False;
 
     for(i = 0; i < test_para->total_num; i++)
     {
 	debug_print("test order[%d] is %s\n",i,test_para->test_order[i]);
     }
 
-    /*for(i = 0; i < test_para->key_num; i++)*/
-    /*{*/
-	/*debug_print("key x is %d, key y is %d, key w is %d, key h is %d\n",test_para->key_rect_array.x[i],test_para->key_rect_array.y[i],test_para->key_rect_array.w[i],test_para->key_rect_array.h[i]);*/
-    /*}*/
+    for(i = 0; i < test_para->key_num; i++)
+    {
+	debug_print("key x is %d, key y is %d, key w is %d, key h is %d\n",test_para->key_rect_array.x[i],test_para->key_rect_array.y[i],test_para->key_rect_array.w[i],test_para->key_rect_array.h[i]);
+    }
 
     return True;
 }

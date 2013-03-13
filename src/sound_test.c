@@ -160,7 +160,7 @@ static int hp_detect(void)
     return n;
 }
 
-int speaker_test(void)
+int speaker_test(struct test_Parameters *test_para)
 {
     int speaker_test_flag = 0;
     if(audio_init() < 0)
@@ -175,7 +175,7 @@ int speaker_test(void)
     return speaker_test_flag;
 }
 
-int hp_test(void)
+int hp_test(struct test_Parameters *test_para)
 {
     int hp_test_flag = 0;
     int hp_loop = 1;

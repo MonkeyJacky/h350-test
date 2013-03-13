@@ -26,7 +26,7 @@ static void write_test_file(int write_length)
 	fclose(card_fp);
 }
 
-int internal_card_test()
+int internal_card_test(struct test_Parameters *test_para)
 {
     int start = 0,last = 0;
     char temp_command[MAX_SIZE] = {0};

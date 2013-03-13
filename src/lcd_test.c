@@ -41,7 +41,7 @@ void adjust_backlight(int bklight_value)
     usleep(10*1000);
 }
 
-int lcd_test(void)
+int lcd_test(struct test_Parameters *test_para)
 {
     int i;
     unsigned int *temp_fb = NULL;

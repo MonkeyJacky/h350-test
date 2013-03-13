@@ -7,6 +7,7 @@
 #include "key_test.h"
 #include "wifi_test.h"
 #include "lcd_test.h"
+#include "tfcard_test.h"
 #include "debug.h"
 #include "sdl_shape.h"
 
@@ -38,6 +39,7 @@ void test_loop(struct test_Parameters *test_para,int num)
     else if(!strcmp(test_para->test_order[num],"tfcard"))
     {
 	debug_print("This is tfcard test!\n");
+	/*tfcard_test();*/
     }
     else if(!strcmp(test_para->test_order[num],"internal_card"))
     {

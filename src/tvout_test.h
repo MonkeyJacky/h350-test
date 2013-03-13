@@ -7,6 +7,7 @@
 #define DEFAULT_HDMI_MODE 3
 #define HDMI_IC_DEV "/proc/jz/it6610_me"
 #define HDMI_PROC_DEV "/proc/jz/hdmi_me"
+#define AVOUT_DEV "/proc/jz/tvout"
 #define FRAME_BUFFER_DEV "/dev/fb0"
 #define FBIO_MODE_SWITCH 0x46a5
 

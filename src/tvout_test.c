@@ -89,7 +89,7 @@ int hdmi_test(void)
 static FILE* av_fp=NULL;
 static int init_av_dev()
 {
-    av_fp = fopen(AVOUT_DEV,,"rb");
+    av_fp = fopen(AVOUT_DEV,"rb");
     if(!av_fp)
     {
 	debug_print("open avout dev error!\n");
@@ -143,4 +143,6 @@ int avout_test(void)
     }
 
     deinit_av_dev();
+
+    return True;
 }

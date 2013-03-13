@@ -11,6 +11,7 @@
 #include "battery_test.h"
 #include "internal_card_test.h"
 #include "tvout_test.h"
+#include "sound_test.h"
 #include "debug.h"
 #include "sdl_shape.h"
 
@@ -63,6 +64,16 @@ void test_loop(struct test_Parameters *test_para,int num)
     {
 	debug_print("This is avout test!\n");
 	/*avout_test();*/
+    }
+    else if(!strcmp(test_para->test_order[num],"speaker"))
+    {
+	debug_print("This is speaker test!\n");
+	/*speaker_test();*/
+    }
+    else if(!strcmp(test_para->test_order[num],"headphone"))
+    {
+	debug_print("This is headphone test!\n");
+	/*hp_test();*/
     }
     else;
 }

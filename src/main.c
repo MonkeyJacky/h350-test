@@ -10,6 +10,7 @@
 #include "tfcard_test.h"
 #include "battery_test.h"
 #include "internal_card_test.h"
+#include "tvout_test.h"
 #include "debug.h"
 #include "sdl_shape.h"
 
@@ -55,11 +56,12 @@ void test_loop(struct test_Parameters *test_para,int num)
     }
     else if(!strcmp(test_para->test_order[num],"hdmi"))
     {
-	debug_print("This is	hdmi test!\n");
+	debug_print("This is hdmi test!\n");
+	/*hdmi_test();*/
     }
-    else if(!strcmp(test_para->test_order[num],"tvout"))
+    else if(!strcmp(test_para->test_order[num],"avout"))
     {
-	debug_print("This is tvout test!\n");
+	debug_print("This is avout test!\n");
     }
     else;
 }

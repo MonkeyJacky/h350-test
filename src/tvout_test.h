@@ -11,5 +11,6 @@
 #define FBIO_MODE_SWITCH 0x46a5
 
 int hdmi_test(void);
+int avout_test(void);
 
 #endif

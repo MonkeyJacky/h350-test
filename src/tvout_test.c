@@ -84,3 +84,63 @@ int hdmi_test(void)
 
     return True;
 }
+
+//**************************avout test*********************
+static FILE* av_fp=NULL;
+static int init_av_dev()
+{
+    av_fp = fopen(AVOUT_DEV,,"rb");
+    if(!av_fp)
+    {
+	debug_print("open avout dev error!\n");
+	return False;
+    }
+    
+    return True;
+}
+
+static void deinit_av_dev()
+{
+    if(av_fp)
+    {
+	fclose(av_fp);
+	av_fp = NULL;
+    }
+}
+
+static int get_av_out_mode()
+{
+    int avout_mode = 0;
+    char buf[128] = {0};
+    if(av_fp)
+    {
+	rewind(av_fp);
+	fgets(buf, 127, av_fp);
+	sscanf(buf, "%d", &avout_mode);
+    }
+
+    return avout_mode;
+}
+
+int avout_test(void)
+{
+    int avout_loop = 1;
+    if(init_av_dev() < 0)
+	return False;
+
+    while(avout_loop)
+    {
+	if(get_av_out_mode() == 1)
+	{
+	    //do some showing here.
+	}
+	else
+	{
+	    //error
+	}
+
+	usleep(200*1000);
+    }
+
+    deinit_av_dev();
+}

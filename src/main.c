@@ -62,6 +62,7 @@ void test_loop(struct test_Parameters *test_para,int num)
     else if(!strcmp(test_para->test_order[num],"avout"))
     {
 	debug_print("This is avout test!\n");
+	/*avout_test();*/
     }
     else;
 }

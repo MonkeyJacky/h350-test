@@ -45,7 +45,8 @@ void test_loop(struct test_Parameters *test_para,int num,int order_array_size)
 	if(!strcmp(test_para->test_order[num],test_order_array[i].item_key_word))
 	{
 	    debug_print("This is %s test!\n",test_order_array[i].item_key_word);
-	    test_order_array[i].item_testing_func(test_para);
+	    test_para->result_flag[i] = test_order_array[i].item_testing_func(test_para);
+	    PRINT_VALUE(test_para->result_flag[i],%d);
 	}
     }
 }

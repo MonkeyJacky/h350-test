@@ -10,7 +10,10 @@
 #include "init_parameters.h"
 #include "debug.h"
 #include "sound_test.h"
+#include "key_test.h"
+#include "sdl_shape.h"
 
+static SDL_Color Bcolor = {0,0,0};
 static int audio_fd = -1;
 static int audio_init(void)
 {
@@ -107,11 +110,6 @@ static int audio_sound_out(char* musicfile)
 
 	write(audio_fd,audio_buffer,get_num);
 
-	if(read_count > 110)
-	{
-	    break;
-	}
-
 	if(get_num != BUF_SIZE)
 	{
 	    break;
@@ -162,13 +160,15 @@ static int hp_detect(void)
 
 int speaker_test(struct test_Parameters *test_para)
 {
-    int speaker_test_flag = 0;
+    int speaker_test_flag = False;
     if(audio_init() < 0)
 	return False;
 
     set_volume(50);
+    test_words_show("Speaker sound test",Bcolor);
+    test_words_show("Play now....",Bcolor);
     audio_sound_out(TEST_SOUND);
-    //TODO get sound_test_flag 
+    speaker_test_flag = decision_loop();
 
     deinit_audio();
 
@@ -177,7 +177,7 @@ int speaker_test(struct test_Parameters *test_para)
 
 int hp_test(struct test_Parameters *test_para)
 {
-    int hp_test_flag = 0;
+    int hp_test_flag = False;
     int hp_loop = 1;
     int audio_out_count = 0;
 
@@ -185,15 +185,27 @@ int hp_test(struct test_Parameters *test_para)
 	return False;
 
     set_volume(50);
+    test_words_show("Headphone sound test",Bcolor);
+    test_words_show("Please insert the headphone...",Bcolor);
     while(hp_loop)
     {
 	if(hp_detect() == 1)
 	{
 	    if(audio_out_count > WAIT_COUNTS)
 	    {
+		test_words_show("Play now....",Bcolor);
 		audio_sound_out(TEST_SOUND);
-		//TODO get hp_test_flag
-		hp_loop = 0;
+		test_words_show("Pull out the headphone to go on",Bcolor);
+		while(hp_loop)
+		{
+		    if(hp_detect() == 0)
+		    {
+			hp_loop = 0;
+			hp_test_flag = decision_loop();
+		    }
+
+		    usleep(20*1000);
+		}
 	    }
 
 	    audio_out_count ++;

@@ -3,7 +3,9 @@
 #include "battery_test.h"
 #include "init_parameters.h"
 #include "debug.h"
+#include "sdl_shape.h"
 
+static SDL_Color Bcolor = {0,0,0};
 static FILE* fp = NULL;
 static int init_battery_dev(void)
 {
@@ -41,14 +43,20 @@ int battery_voltage_test(struct test_Parameters *test_para)
 {
     int bat_test_loop = 1;
     int count = 0;
+    float voltage = 0;
+    char temp_str[MAX_SIZE] = {0};
 
+    test_words_show("Battery voltage test",Bcolor);
     if(init_battery_dev() < 0)
 	return False;
 
     while(bat_test_loop)
     {
-	get_bat_val();
+	voltage =  (float) get_bat_val();
 	sleep(1);
+	memset(temp_str,0,MAX_SIZE);
+	sprintf(temp_str,"Voltage : %0.2f V",voltage/1000);
+	test_words_show(temp_str,Bcolor);
 	count ++;
 	if(count == READ_BAT_TIMES)
 	{

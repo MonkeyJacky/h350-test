@@ -1,7 +1,5 @@
 #include <fcntl.h>
 #include <unistd.h>
-#include <SDL.h>
-#include <SDL_image.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -10,21 +8,22 @@
 #include "sdl_shape.h"
 #include "init_parameters.h"
 
-static SDL_Color Bcolor={0,0,0};
+static SDL_Color Bcolor = {0,0,0};
+
 static SDL_Surface* background = NULL;
 enum KEY_ARRAY{
     H350_KEY_UP,
     H350_KEY_DOWN,
     H350_KEY_LEFT,
     H350_KEY_RIGHT,
-    H350_KEY_B,
     H350_KEY_A,
+    H350_KEY_B,
     H350_KEY_Y,
     H350_KEY_X,
     H350_KEY_L,
     H350_KEY_R,
-    H350_KEY_SELECT,
     H350_KEY_START,
+    H350_KEY_SELECT,
 };
 
 struct key_test_para{
@@ -131,6 +130,62 @@ static void key_release_warning(void)
 	if(key_read_value == 0)
 	    key_loop = 0;
     }
+}
+
+int decision_loop(void)
+{
+    int decision_flag = 1;
+    unsigned int key_read_value = 0;
+
+    test_words_show("Press A for pass, B for fail",Bcolor);
+
+    while(decision_flag)
+    {
+	key_read_value = key_pad_read();
+
+	if(key_read_value == (1 << H350_KEY_A))
+	{
+	    draw_decision_pic(PASS);
+	    return PASS;
+	}
+	else if(key_read_value == (1 << H350_KEY_B))
+	{
+	    draw_decision_pic(FAIL);
+	    return FAIL;
+	}
+	else;
+
+	usleep(100*1000);
+    }
+
+    return FAIL;
+}
+
+int press_B_to_quit(void)
+{
+    int quit_loop = 1;
+    unsigned int key_read_value = 0;
+
+    test_words_show("Press A go on scaning, B jump off",Bcolor);
+
+    while(quit_loop)
+    {
+	key_read_value = key_pad_read();
+
+	if(key_read_value == (1 << H350_KEY_A))
+	{
+	    return PASS;
+	}
+	else if(key_read_value == (1 << H350_KEY_B))
+	{
+	    return FAIL;
+	}
+	else;
+
+	usleep(100*1000);
+    }
+
+    return FAIL;
 }
 /****************************key test****************************/
 static int key_image_init(void)
@@ -271,6 +326,7 @@ int key_test(struct test_Parameters *test_para)
 
     deinit_flag_res(&key_para);
     key_image_deinit();
+    draw_decision_pic(PASS);
 
     return True;
 }
@@ -323,7 +379,7 @@ int joystick_test(struct test_Parameters *test_para)
     init_flag(&key_para, test_para->joykey_rect_array, test_para->joykey_num);
 
     key_image_init();
-    test_words_show("Joystick test!",Bcolor);
+    test_words_show("Joystick test",Bcolor);
     key_release_warning();
     draw_key_view(&key_para);
     while(key_loop)
@@ -337,5 +393,7 @@ int joystick_test(struct test_Parameters *test_para)
 
     deinit_flag_res(&key_para);
     key_image_deinit();
+    draw_decision_pic(PASS);
+
     return True;
 }

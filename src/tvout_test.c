@@ -9,6 +9,24 @@
 #include "init_parameters.h"
 #include "debug.h"
 #include "tvout_test.h"
+#include "sdl_shape.h"
+#include "key_test.h"
+
+static SDL_Color Bcolor = {0,0,0};
+static SDL_Surface* test_back_show = NULL;
+static int init_tvout_pic(void)
+{
+    test_back_show = load_image(TEST_BACK_IMG);
+    if(test_back_show < 0)
+	return False;
+
+    return True;
+}
+
+static void deinit_tvout_pic(void)
+{
+    sdl_free_surface(test_back_show);
+}
 
 static int get_hdmi_mode(void)
 {
@@ -72,6 +90,9 @@ static int test_hdmi_loop(void)
     {
 	if(False == set_lcd_control_mode(DEFAULT_HDMI_MODE))
 	    return False;
+
+	sdl_draw_a_pic(test_back_show,NULL,NULL);
+	sleep(3);
     }
 
     return True;
@@ -79,10 +100,21 @@ static int test_hdmi_loop(void)
 
 int hdmi_test(struct test_Parameters *test_para)
 {
-    if (test_hdmi_loop() < 0)
+    test_words_show("HDMI test",Bcolor);
+    if(init_tvout_pic() < 0)
+    {
+	draw_decision_pic(FAIL);
 	return False;
+    }
 
-    return True;
+    if (test_hdmi_loop() != True)
+    {
+	draw_decision_pic(FAIL);
+	return False;
+    }
+
+    deinit_tvout_pic();
+    return decision_loop();
 }
 
 //**************************avout test*********************
@@ -125,24 +157,40 @@ static int get_av_out_mode()
 int avout_test(struct test_Parameters *test_para)
 {
     int avout_loop = 1;
-    if(init_av_dev() < 0)
+
+    test_words_show("Av out test",Bcolor);
+
+    if(init_tvout_pic() < 0)
+    {
+	draw_decision_pic(FAIL);
 	return False;
+    }
+
+    if(init_av_dev() < 0)
+    {
+	draw_decision_pic(FAIL);
+	return False;
+    }
 
     while(avout_loop)
     {
 	if(get_av_out_mode() == 1)
 	{
-	    //do some showing here.
+	    sdl_draw_a_pic(test_back_show,NULL,NULL);
+	    sleep(3);
 	}
-	else
+
+	if(press_B_to_quit() < 0)
 	{
-	    //error
+	    draw_decision_pic(FAIL);
+	    return False;
 	}
 
 	usleep(200*1000);
     }
 
     deinit_av_dev();
+    deinit_tvout_pic();
 
-    return True;
+    return decision_loop();
 }

@@ -42,6 +42,7 @@ void draw_decision_pic(int sel)
     }
 
     sdl_flip_screen();
+    SDL_Delay(1000);
 }
 
 void test_words_show(const char* temp_str, SDL_Color color)

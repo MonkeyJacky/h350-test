@@ -4,7 +4,7 @@
 #include <string.h>
 
 #define CONFIG_FILE "test.conf"
-#define False -1
+#define False (-1)
 #define True 0
 #define CONTINUE 1
 #define MAX_SIZE 256
@@ -31,10 +31,8 @@
 #define FAIL_VIEW "res/test_fail.png"
 #define FRAME_BUFFER_DEV "/dev/fb0"
 
-enum SELECTION{
-    FAIL,
-    PASS,
-};
+#define FAIL (-1)
+#define PASS 0
 
 struct key_rect_para{
     int	*x;

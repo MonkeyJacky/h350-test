@@ -4,7 +4,10 @@
 #include "debug.h"
 #include "init_parameters.h"
 #include "lcd_test.h"
+#include "sdl_shape.h"
+#include "key_test.h"
 /*************************lcd test***************************/
+static SDL_Color Bcolor = {0,0,0};
 void flush_screen(int mode)
 {
 	unsigned char buff[32] = {0};
@@ -64,15 +67,19 @@ int lcd_test(struct test_Parameters *test_para)
 {
     int i;
     extern unsigned char *fb;
+    test_words_show("Lcd and backlight test",Bcolor);
 
     PRINT_VALUE(test_para->screen_info.buffer_size,"%d");
     if(init_fb(test_para->screen_info.buffer_size) < 0)
+    {
+	draw_decision_pic(FAIL);
 	return False;
+    }
 
     for(i = 0; i < 3; i++) // 3 kind of colors.
     {
 	draw_color_bar((unsigned int *)fb,i,test_para->screen_info.width,test_para->screen_info.height);
-	sleep(1);
+	sleep(2);
     }
 
     for(i = 20; i < 100; i += 20) // change backlight 20 values each.
@@ -80,7 +87,7 @@ int lcd_test(struct test_Parameters *test_para)
 
     deinit_fb(test_para->screen_info.buffer_size);
     /*return decision_warning_show();*/
-    return 0;
+    return decision_loop();
 }
 
 

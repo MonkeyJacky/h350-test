@@ -4,7 +4,9 @@
 #include "init_parameters.h"
 #include "tfcard_test.h"
 #include "debug.h"
+#include "sdl_shape.h"
 
+static SDL_Color Bcolor = {0,0,0};
 static FILE* tfcard_fp = NULL;
 static int tfcard_scan_init()
 {
@@ -77,8 +79,14 @@ int tfcard_test(struct test_Parameters *test_para)
     int tfcard_loop = 1;
     int tfcard_flag = 1;
 
+    test_words_show("External card test",Bcolor);
     while(tfcard_loop)
     {
+	if(once){
+	    test_words_show("Please insert the SD card",Bcolor);
+	}
+	//The SD card must have one file named test_mode.txt
+	//for card checking.
 	if(tfcard_scan_init() == True)
 	{
 	    usleep(500*1000);
@@ -91,14 +99,14 @@ int tfcard_test(struct test_Parameters *test_para)
 		    once = 0;
 		    if(tfcard_flag == False)
 		    {
-			//return fail warning show. 
 			debug_print("Tfcard test failed!\n");
 			deinit_tfcard();
+			draw_decision_pic(FAIL);
 			return False;
 		    }
 		    else
 		    {
-			//show pull out
+			test_words_show("Pull out the card to go on",Bcolor);
 		    }
 		}
 	    }
@@ -108,8 +116,8 @@ int tfcard_test(struct test_Parameters *test_para)
 		{
 		    debug_print("Passed tfcard test!\n");
 		    deinit_tfcard();
+		    draw_decision_pic(PASS);
 		    return True;
-		    //return ok warning show.
 		}
 	    }
 	}
@@ -117,5 +125,6 @@ int tfcard_test(struct test_Parameters *test_para)
 	usleep(500*1000);
     }
 
+    draw_decision_pic(FAIL);
     return False;
 }

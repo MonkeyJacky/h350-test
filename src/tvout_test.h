@@ -11,6 +11,7 @@
 #define HDMI_PROC_DEV "/proc/jz/hdmi_me"
 #define AVOUT_DEV "/proc/jz/tvout_me"
 #define FBIO_MODE_SWITCH 0x46a5
+#define TEST_BACK_IMG "res/test_pic.png"
 
 int hdmi_test(struct test_Parameters *test_para);
 int avout_test(struct test_Parameters *test_para);

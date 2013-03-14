@@ -6,7 +6,7 @@
 #define BUF_SIZE (2*2*735)
 #define SOUND_TRACKS 2
 #define MAX_VOLUME 100
-#define WAIT_COUNTS 10
+#define WAIT_COUNTS 20
 #define MIXER_DEVICE "/dev/mixer"
 #define SAMPLINGRATE 44100
 #define DSP_DEVICE "/dev/dsp"

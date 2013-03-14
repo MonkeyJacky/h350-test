@@ -7,7 +7,9 @@
 #include "debug.h"
 #include "wifi_test.h"
 #include "init_parameters.h"
+#include "sdl_shape.h"
 
+static SDL_Color Bcolor = {0,0,0};
 static int allocate_ip_random(struct Wifi_parameters *wifi_para)
 {
     struct timeval tpstart;
@@ -96,14 +98,17 @@ static int connection_loop(struct Wifi_parameters *wifi_para)
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"ifconfig %s %s",wifi_para->network_card,wifi_para->client_ip);
     ret |= system(temp_command);
+    sleep(1);
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"iwlist %s scanning",wifi_para->network_card);
     ret |= system(temp_command);
+    sleep(1);
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"wpa_supplicant -Dwext -i%s -c %s -dd &",wifi_para->network_card,wifi_para->conf);
     ret |= system(temp_command);
+    sleep(3);
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"ping %s -c 5",wifi_para->host_ip);
@@ -125,15 +130,18 @@ int wifi_test(struct test_Parameters *test_para)
     debug_print("network card is %s\n",wifi_para.network_card);
     debug_print("host ip is %s\n",wifi_para.host_ip);
     debug_print("client ip is %s\n",wifi_para.client_ip);
+    test_words_show("Wifi test",Bcolor);
     init_wifi_driver(&wifi_para);
 
     ret = connection_loop(&wifi_para);
     if(!ret)
     {
+	draw_decision_pic(PASS);
 	debug_print("It's connected successfully!\n");
     }
     else
     {
+	draw_decision_pic(FAIL);
 	debug_print("connected fail!\n");
 	return False;
     }

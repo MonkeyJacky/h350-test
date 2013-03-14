@@ -70,6 +70,7 @@ int init_res(struct test_Parameters *test_para)
 	return False;
     }
     test_para->test_order = malloc(sizeof(char*) * test_para->total_num);
+    test_para->result_flag = malloc(sizeof(char*) * test_para->total_num);
 
     test_para->key_num = cfg_get_key_value_to_int(test_cf,KEY_NUM);
     debug_print("test_para->key_num is %d\n",test_para->key_num);
@@ -158,6 +159,7 @@ void deinit_res(struct test_Parameters *test_para)
 	deep_free(test_para->test_order[i]);
     }
     deep_free(test_para->test_order);
+    deep_free(test_para->result_flag);
 
     deep_free(test_para->key_rect_array.x);
     deep_free(test_para->key_rect_array.y);
@@ -171,6 +173,13 @@ void deinit_res(struct test_Parameters *test_para)
 
 int init_result_flag(struct test_Parameters *test_para)
 {
+    int i;
+
+    for(i = 0; i < test_para->total_num; i++)
+    {
+	test_para->result_flag[i] = -1;
+    }
+
     return True;
 }
 

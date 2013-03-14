@@ -4,7 +4,6 @@
 #include "init_parameters.h"
 
 #define KEYPAD "/dev/keypad"
-#define WHITE_BACKGROUND "res/white_back.png"
 
 int key_test(struct test_Parameters *test_para);
 

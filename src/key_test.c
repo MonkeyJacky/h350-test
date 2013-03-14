@@ -115,15 +115,16 @@ void wait_for_next(void)
     }
 }
 /****************************key test****************************/
-static void key_image_init(void)
+static int key_image_init(void)
 {
-    background = IMG_Load(WHITE_BACKGROUND);
+    background = load_image(WHITE_BACKGROUND);
+
+    return True;
 }
 
 static void key_image_deinit(void)
 {
-    if(background)
-	SDL_FreeSurface(background);
+    sdl_free_surface(background);
 }
 
 static void init_flag(struct key_test_para *para, const struct key_rect_para key_offset_array,int test_key_num)

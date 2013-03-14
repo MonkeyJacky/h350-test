@@ -23,6 +23,7 @@
 #define deep_free(x)\
 	free(x);\
 	x = NULL;
+#define WHITE_BACKGROUND "res/white_back.png"
 
 struct key_rect_para{
     int	*x;

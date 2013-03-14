@@ -5,23 +5,65 @@
 
 #include "sdl_shape.h"
 #include "debug.h"
+#include "init_parameters.h"
 
 static int pen_width;  //the shape width
 
 static Uint32 pen_color;  //the shape color
 static SDL_Surface *screen = NULL;
+static SDL_Surface *background = NULL;
 
 void sdl_flip_screen(void)
 {
     SDL_Flip(screen);
 }
+
+void sdl_free_surface(SDL_Surface* obj_surface)
+{
+    if(obj_surface)
+    {
+	SDL_FreeSurface(obj_surface);
+	obj_surface = NULL;
+    }
+}
+
+void test_words_show(TTF_Font *font, const char* temp_str, SDL_Color color)
+{
+	SDL_Rect test_words_rect;
+	SDL_Surface* temp_test_words =
+		TTF_RenderUTF8_Blended(font,temp_str,color);
+
+	test_words_rect.x = (screen->w - temp_test_words->w)/2;
+	test_words_rect.y = (screen->h - temp_test_words->h)/2 - 20;
+
+	SDL_BlitSurface(background,NULL,screen,NULL);
+	SDL_BlitSurface(temp_test_words,NULL,screen,&test_words_rect);
+
+	sdl_flip_screen();
+
+	sdl_free_surface(temp_test_words);
+
+	SDL_Delay(1000);
+}
+
+SDL_Surface* load_image(char* img_path)
+{
+    SDL_Surface* img = IMG_Load(img_path);
+    if(!img)
+    {
+	debug_print("init %s error!\n",img_path);
+	return NULL;
+    }
+
+    return img;
+}
 //sdl init
 int init_sdl(void)
 {
-    if( SDL_Init( SDL_INIT_VIDEO ) == -1 )
+    if( SDL_Init( SDL_INIT_VIDEO ) == False )
     {
 	debug_print("SDL_Init(SDL_INIT_VIDEO) FAIL!\n");
-	return -1;
+	return False;
     }
 
     SDL_ShowCursor(0);
@@ -32,21 +74,22 @@ int init_sdl(void)
     if( screen == NULL )
     {
 	debug_print("SDL_SetVideoMode FAIL!\n");
-	return -1;
+	return False;
     }
 
     //Initialize SDL_ttf
-    if( TTF_Init() == -1 )
+    if( TTF_Init() == False )
     {
 	debug_print("TTF_Init FAIL!\n");
-	//        return -1;
+	return False;
     }
 
     /*font = TTF_OpenFont(FONT_PATH,18);*/
-    /*background = IMG_Load(WHITE_BACKGROUND);*/
+    if( !(background = load_image(WHITE_BACKGROUND)) )
+	return False;
     /*lcd_test_pic = IMG_Load(LCD_TEST_PIC);*/
     /*TTF_SetFontStyle(font,TTF_STYLE_BOLD);*/
-    return 0;
+    return True;
 }
 //when we draw a shape we must init this
 void sdl_draw_a_pic(SDL_Surface* img, SDL_Rect *src_rect, SDL_Rect *dst_rect)

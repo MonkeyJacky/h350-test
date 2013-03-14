@@ -31,25 +31,13 @@ int internal_card_test(struct test_Parameters *test_para)
     int start = 0,last = 0;
     char temp_command[MAX_SIZE] = {0};
 
-    memset(temp_command,0,MAX_SIZE);
-    sprintf(temp_command,"umount %s",MEMORY_PATH);
-    system(temp_command);
-
-    memset(temp_command,0,MAX_SIZE);
-    sprintf(temp_command,"mkfs.vfat %s",BLOCK0P4);
-    system(temp_command);
-    
-    memset(temp_command,0,MAX_SIZE);
-    sprintf(temp_command,"mount %s %s",BLOCK0P4,MEMORY_PATH);
-    system(temp_command);
-
     start = SDL_GetTicks();
     write_test_file(_20MB_);
     last = SDL_GetTicks() - start;
     debug_print("%s %d lasttime is %d\n",__FILE__,__LINE__,last);
 
     memset(temp_command,0,MAX_SIZE);
-    sprintf(temp_command,"rm %s -r",TEST_FILE);
+    sprintf(temp_command,"rm %s",TEST_FILE);
     system(temp_command);
     sync();
 

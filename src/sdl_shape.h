@@ -4,11 +4,15 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include "init_parameters.h"
 
-int init_sdl(void);
+#define FONT_PATH "/usr/share/font/l009.ttf"
+
+int init_sdl(struct test_Parameters *test_para);
+void deinit_sdl(void);
 SDL_Surface* load_image(char* img_path);
 void sdl_free_surface(SDL_Surface* obj_surface);
-void test_words_show(TTF_Font *font, const char* temp_str, SDL_Color color);
+void test_words_show(const char* temp_str, SDL_Color color);
 void sdl_draw_a_pic(SDL_Surface* img, SDL_Rect *src_rect, SDL_Rect *dst_rect);
 void sdl_flip_screen(void);
 void sdl_set_pen(SDL_Color *color, int w);

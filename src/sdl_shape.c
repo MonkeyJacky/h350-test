@@ -12,6 +12,9 @@ static int pen_width;  //the shape width
 static Uint32 pen_color;  //the shape color
 static SDL_Surface *screen = NULL;
 static SDL_Surface *background = NULL;
+static SDL_Surface *pass_view = NULL;
+static SDL_Surface *fail_view = NULL;
+static TTF_Font *font;
 
 void sdl_flip_screen(void)
 {
@@ -27,7 +30,21 @@ void sdl_free_surface(SDL_Surface* obj_surface)
     }
 }
 
-void test_words_show(TTF_Font *font, const char* temp_str, SDL_Color color)
+void draw_decision_pic(int sel)
+{
+    if(sel == PASS)
+    {
+	SDL_BlitSurface(pass_view,NULL,screen,NULL);
+    }
+    else
+    {
+	SDL_BlitSurface(fail_view,NULL,screen,NULL);
+    }
+
+    sdl_flip_screen();
+}
+
+void test_words_show(const char* temp_str, SDL_Color color)
 {
 	SDL_Rect test_words_rect;
 	SDL_Surface* temp_test_words =
@@ -57,8 +74,16 @@ SDL_Surface* load_image(char* img_path)
 
     return img;
 }
+void deinit_sdl(void)
+{
+    sdl_free_surface(screen);
+    sdl_free_surface(background);
+    sdl_free_surface(pass_view);
+    sdl_free_surface(fail_view);
+    SDL_Quit();
+}
 //sdl init
-int init_sdl(void)
+int init_sdl(struct test_Parameters *test_para)
 {
     if( SDL_Init( SDL_INIT_VIDEO ) == False )
     {
@@ -68,7 +93,7 @@ int init_sdl(void)
 
     SDL_ShowCursor(0);
 
-    screen = SDL_SetVideoMode( 320, 240, 32, SDL_SWSURFACE );
+    screen = SDL_SetVideoMode( test_para->screen_info.width, test_para->screen_info.height, test_para->screen_info.bits_per_pixel, SDL_SWSURFACE );
 
     //If there was an error in setting up the screen
     if( screen == NULL )
@@ -84,11 +109,15 @@ int init_sdl(void)
 	return False;
     }
 
-    /*font = TTF_OpenFont(FONT_PATH,18);*/
+    font = TTF_OpenFont(FONT_PATH,15);
     if( !(background = load_image(WHITE_BACKGROUND)) )
 	return False;
+    if( !(pass_view = load_image(PASS_VIEW)) )
+	return False;
+    if( !(fail_view = load_image(FAIL_VIEW)) )
+	return False;
     /*lcd_test_pic = IMG_Load(LCD_TEST_PIC);*/
-    /*TTF_SetFontStyle(font,TTF_STYLE_BOLD);*/
+    TTF_SetFontStyle(font,TTF_STYLE_BOLD);
     return True;
 }
 //when we draw a shape we must init this

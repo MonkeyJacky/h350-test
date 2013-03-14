@@ -5,18 +5,32 @@
 #include "init_parameters.h"
 #include "lcd_test.h"
 /*************************lcd test***************************/
-static void draw_color_bar(unsigned int * temp_fb,unsigned int index)
+void flush_screen(int mode)
+{
+	unsigned char buff[32] = {0};
+	FILE *brt_fd = fopen(FLUSH_DEVICE, "w");
+	sprintf(buff,"%d",mode);
+	fwrite(buff,32,1,brt_fd);
+	//fflush(brt_fd);
+	//fsync(brt_fd);
+	fclose(brt_fd);
+}
+
+static void draw_color_bar(unsigned int * temp_fb,unsigned int index,int width,int height)
 {
     unsigned int *fb = temp_fb;
-    unsigned int  i = 3;
+    unsigned int  i = 0;
     unsigned int j = 0;
+    int k = 0;
     unsigned char offset[]={0,8,16};
     
-    i = 27;
+    i = height / 10;
+    if(i <= 0)
+	return;
     unsigned int base_color = 0x09;
     while(i--)
     {
-        j = 480 * 10;
+        j = width * 10;
         while(j--)
         {
             *fb++ = base_color << offset[index];
@@ -25,10 +39,15 @@ static void draw_color_bar(unsigned int * temp_fb,unsigned int index)
         if(base_color + 0x9 <= 0xff)
             base_color += 0x9;
     }
-    j = 480 * 2;
-    while(j--)
+
+    k = height % 10;
+    if(k != 0)
     {
-        *fb++ = base_color << offset[index];
+	j = width * k;
+	while(j--)
+	{
+	    *fb++ = base_color << offset[index];
+	}
     }
 }
 
@@ -44,15 +63,22 @@ void adjust_backlight(int bklight_value)
 int lcd_test(struct test_Parameters *test_para)
 {
     int i;
-    unsigned int *temp_fb = NULL;
-    //TODO framebuffer need be initted.
+    extern unsigned char *fb;
+
+    PRINT_VALUE(test_para->screen_info.buffer_size,"%d");
+    if(init_fb(test_para->screen_info.buffer_size) < 0)
+	return False;
 
     for(i = 0; i < 3; i++) // 3 kind of colors.
-	draw_color_bar(temp_fb,i);
+    {
+	draw_color_bar((unsigned int *)fb,i,test_para->screen_info.width,test_para->screen_info.height);
+	sleep(1);
+    }
 
     for(i = 20; i < 100; i += 20) // change backlight 20 values each.
 	adjust_backlight(i);
 
+    deinit_fb(test_para->screen_info.buffer_size);
     /*return decision_warning_show();*/
     return 0;
 }

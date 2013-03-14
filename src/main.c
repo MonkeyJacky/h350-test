@@ -62,10 +62,12 @@ int main(void)
     if (init_result_flag(&test_para) < 0)
 	exit(0);
 
-    if (init_sdl() < 0)
+    if (init_sdl(&test_para) < 0)
 	exit(0);
 
+    init_key_pad();
     test_order_array_size = sizeof(test_order_array) / sizeof(test_orders_);
+    flush_screen(1);
     if(test_para.total_num > 0 && test_para.total_num <= test_order_array_size)
     {
 	for(i = 0; i < test_para.total_num; i++)
@@ -76,6 +78,9 @@ int main(void)
 	debug_print("Get test order num error!\n");
     }
 
+    deinit_key_pad();
     deinit_res(&test_para);
+    deinit_sdl();
+    flush_screen(0);
     return 0;
 }

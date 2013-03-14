@@ -12,5 +12,7 @@
 #define debug_print(x,...) 
 #endif
 
+#define PRINT_VALUE(a,b) \
+    printf("%s():%d" #a " is " #b "\n",__func__,__LINE__,a)
 
 #endif

@@ -17,14 +17,14 @@ enum KEY_ARRAY{
     H350_KEY_DOWN,
     H350_KEY_LEFT,
     H350_KEY_RIGHT,
-    H350_KEY_A,
     H350_KEY_B,
+    H350_KEY_A,
     H350_KEY_Y,
     H350_KEY_X,
     H350_KEY_L,
     H350_KEY_R,
-    H350_KEY_START,
     H350_KEY_SELECT,
+    H350_KEY_START,
 };
 
 struct key_test_para{
@@ -112,6 +112,24 @@ void wait_for_next(void)
         {
             key_read_value = 1;
         }
+    }
+}
+
+static void key_release_warning(void)
+{
+    int key_read_value = 0;
+    int key_loop = 1;
+
+    test_words_show("Please release the key!",Bcolor);
+
+    while(key_loop)
+    {
+	key_read_value = key_pad_read();
+	if(key_read_value == 0xffff)
+	    continue;
+
+	if(key_read_value == 0)
+	    key_loop = 0;
     }
 }
 /****************************key test****************************/
@@ -233,12 +251,12 @@ static int process_key(unsigned int keyval, struct key_test_para *para)
 
 int key_test(struct test_Parameters *test_para)
 {
-    int key_loop = 0;
+    int key_loop = 1;
     int key_read_value = 0;
     struct key_test_para key_para;
     init_flag(&key_para, test_para->key_rect_array, test_para->key_num);
-    /*test_back_show(key_test_str);*/
-    /*key_release_warning(key_loop);*/
+    test_words_show("Keypad test!",Bcolor);
+    key_release_warning();
     key_image_init();
 
     draw_key_view(&key_para);
@@ -277,19 +295,19 @@ static int process_joystick_key(unsigned int keyval,struct key_test_para *para)
     {
 	ret = process_key_down(H350_JOYKEY_RIGHT,para);
     }
-    if(keyval == (para->key_value[H350_JOYKEY_UP] & para->key_value[H350_JOYKEY_LEFT]))
+    if(keyval == (para->key_value[H350_JOYKEY_UP] | para->key_value[H350_JOYKEY_LEFT]))
     {
 	ret = process_key_down(H350_JOYKEY_TOP_LEFT,para);
     }
-    if(keyval == (para->key_value[H350_JOYKEY_UP] & para->key_value[H350_JOYKEY_RIGHT]))
+    if(keyval == (para->key_value[H350_JOYKEY_UP] | para->key_value[H350_JOYKEY_RIGHT]))
     {
 	ret = process_key_down(H350_JOYKEY_TOP_RIGHT,para);
     }
-    if(keyval == (para->key_value[H350_JOYKEY_DOWN] & para->key_value[H350_JOYKEY_RIGHT]))
+    if(keyval == (para->key_value[H350_JOYKEY_DOWN] | para->key_value[H350_JOYKEY_RIGHT]))
     {
 	ret = process_key_down(H350_JOYKEY_BOTTOM_RIGHT,para);
     }
-    if(keyval == (para->key_value[H350_JOYKEY_DOWN] & para->key_value[H350_JOYKEY_LEFT]))
+    if(keyval == (para->key_value[H350_JOYKEY_DOWN] | para->key_value[H350_JOYKEY_LEFT]))
     {
 	ret = process_key_down(H350_JOYKEY_BOTTOM_LEFT,para);
     }
@@ -299,12 +317,14 @@ static int process_joystick_key(unsigned int keyval,struct key_test_para *para)
 
 int joystick_test(struct test_Parameters *test_para)
 {
-    int key_loop = 0;
+    int key_loop = 1;
     int key_read_value = 0;
     struct key_test_para key_para;
     init_flag(&key_para, test_para->joykey_rect_array, test_para->joykey_num);
 
     key_image_init();
+    test_words_show("Joystick test!",Bcolor);
+    key_release_warning();
     draw_key_view(&key_para);
     while(key_loop)
     {

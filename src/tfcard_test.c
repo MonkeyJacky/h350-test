@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include "init_parameters.h"
 #include "tfcard_test.h"
+#include "debug.h"
 
 static FILE* tfcard_fp = NULL;
 static int tfcard_scan_init()
@@ -11,35 +12,43 @@ static int tfcard_scan_init()
     {
 	tfcard_fp = fopen(TFCARD_DEVICE,"rb");
 	if(!tfcard_fp)
+	{
+	    tfcard_fp = NULL;
 	    return False;
+	}
     }
     return True;
 }
 
 static int get_tfcard_state()
 {
-    char tfcard_state[20];
-    int temp_draw_tf_card = 0;
+    char tfcard_state[20] = {0};
+    int temp_draw_tf_card = -1;
     if(tfcard_fp)
     {
 	rewind(tfcard_fp);
 	fgets(tfcard_state,20,tfcard_fp);
 	if(strstr(tfcard_state,"no"))
 	{
-	    temp_draw_tf_card = 0;
-	    fclose(tfcard_fp);
-	    tfcard_fp = NULL;
+	    temp_draw_tf_card = False;
 	}
 	else
 	{
-	    temp_draw_tf_card = 1;
+	    temp_draw_tf_card = True;
 	}
     }
+    PRINT_VALUE(temp_draw_tf_card,%d);
 
     return temp_draw_tf_card;
 }
 
-static int check_tfcard_info()
+void deinit_tfcard(void)
+{
+    if(tfcard_fp)
+	fclose(tfcard_fp);
+}
+
+static int check_tfcard_info(void)
 {
     int i;
     int ok_count = 0;
@@ -70,20 +79,22 @@ int tfcard_test(struct test_Parameters *test_para)
 
     while(tfcard_loop)
     {
-	if(tfcard_scan_init())
+	if(tfcard_scan_init() == True)
 	{
 	    usleep(500*1000);
-	    if(get_tfcard_state() == 1)
+	    if(get_tfcard_state() == True)
 	    {
 		if(once)
 		{
 		    sleep(1);
 		    tfcard_flag = check_tfcard_info();
 		    once = 0;
-		    tfcard_loop = tfcard_flag;
-		    if(tfcard_flag == 0)
+		    if(tfcard_flag == False)
 		    {
 			//return fail warning show. 
+			debug_print("Tfcard test failed!\n");
+			deinit_tfcard();
+			return False;
 		    }
 		    else
 		    {
@@ -93,8 +104,11 @@ int tfcard_test(struct test_Parameters *test_para)
 	    }
 	    else
 	    {
-		if(tfcard_flag && !once)
+		if(tfcard_flag == True && !once)
 		{
+		    debug_print("Passed tfcard test!\n");
+		    deinit_tfcard();
+		    return True;
 		    //return ok warning show.
 		}
 	    }

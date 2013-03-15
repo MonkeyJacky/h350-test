@@ -19,7 +19,7 @@ void flush_screen(int mode)
 	fclose(brt_fd);
 }
 
-static void draw_color_bar(unsigned int * temp_fb,unsigned int index,int width,int height)
+void draw_color_bar(unsigned int * temp_fb,unsigned int index,int width,int height)
 {
     unsigned int *fb = temp_fb;
     unsigned int  i = 0;

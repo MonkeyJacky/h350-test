@@ -147,6 +147,20 @@ int init_res(struct test_Parameters *test_para)
 	return False;
     }
 
+    test_para->hdmi_info.width = 
+	cfg_get_key_value_to_int(test_cf,HDMI_SCREEN_WIDTH);
+    test_para->hdmi_info.height = 
+	cfg_get_key_value_to_int(test_cf,HDMI_SCREEN_HEIGHT);
+    test_para->hdmi_info.buffer_size = 
+	test_para->hdmi_info.width * test_para->hdmi_info.height * test_para->screen_info.bits_per_pixel / 8;
+    if( (test_para->hdmi_info.width |
+		test_para->hdmi_info.height |
+		test_para->hdmi_info.buffer_size) < 0 )
+    {
+	debug_print("get screen info error!\n");
+	return False;
+    }
+
     return True;
 }
 

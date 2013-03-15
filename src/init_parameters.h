@@ -23,6 +23,8 @@
 #define SCREEN_WIDTH "screen_width"
 #define SCREEN_HEIGHT "screen_height"
 #define SCREEN_BITS_PER_PIXEL "screen_bits_per_pixel"
+#define HDMI_SCREEN_WIDTH "hdmi_screen_width"
+#define HDMI_SCREEN_HEIGHT "hdmi_screen_height"
 #define deep_free(x)\
 	free(x);\
 	x = NULL;
@@ -57,6 +59,7 @@ struct test_Parameters{
     struct key_rect_para key_rect_array;
     struct key_rect_para joykey_rect_array;
     struct _screen_info_ screen_info;
+    struct _screen_info_ hdmi_info;
 };
 
 int init_fb(int buffer_size);

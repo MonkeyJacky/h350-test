@@ -187,6 +187,26 @@ int press_B_to_quit(void)
 
     return FAIL;
 }
+
+int press_A_go_on(void)
+{
+    int go_on_loop = 1;
+    unsigned int key_read_value = 0;
+
+    while(go_on_loop)
+    {
+	key_read_value = key_pad_read();
+
+	if(key_read_value == (1 << H350_KEY_A))
+	{
+	    return PASS;
+	}
+
+	usleep(100*1000);
+    }
+
+    return FAIL;
+}
 /****************************key test****************************/
 static int key_image_init(void)
 {

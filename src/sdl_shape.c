@@ -386,6 +386,7 @@ SDL_Surface * sdl_create_surface(int w, int h)
 
   return face_rect;
 }
+
 SDL_Surface * sdl_create_surface_with_color(int w, int h,SDL_Color *color)
 {
   SDL_Surface *face_rect;

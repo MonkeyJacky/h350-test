@@ -183,6 +183,8 @@ void deinit_res(struct test_Parameters *test_para)
     deep_free(test_para->joykey_rect_array.y);
     deep_free(test_para->joykey_rect_array.w);
     deep_free(test_para->joykey_rect_array.h);
+
+    cfg_free_config_file_struct(&test_cf);
 }
 
 int init_result_flag(struct test_Parameters *test_para)

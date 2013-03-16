@@ -136,7 +136,6 @@ int wifi_test(struct test_Parameters *test_para)
     int ret = 0;
     init_wifi_para(&wifi_para);
 
-    debug_print("wifi device is %s\n",wifi_para.wifi_device);
     debug_print("driver dir is %s\n",wifi_para.driver_dir);
     debug_print("network card is %s\n",wifi_para.network_card);
     debug_print("host ip is %s\n",wifi_para.host_ip);

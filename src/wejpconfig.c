@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "wejpconfig.h"
-#include "crc.h"
 #include "debug.h"
 #include <unistd.h>
 
@@ -108,47 +107,6 @@ void cfg_init_config_file_struct(ConfigFile *cf)
 	cf->lastkey = 0;
 }
 
-/* Checks wether the config file exists or not */
-int cfg_check_sys_config_file(char *filename)
-{
-	FILE *file;
-	int  result = CFG_ERROR;
-	int ret;
-
-	debug_print("filename is %s \n",filename);
-	if(access(filename,W_OK) != 0)     //check /usr/etc/snk_desktop/value_store.conf
-	{
-		debug_print("\nstore_value.conf cannot write,\n the configfs maybe error!\n");	
-		return CFG_ERROR;
-	}
-
-	file = fopen(filename, "r");
-	if (file == NULL)
-	{
-		debug_print("The file is not exist,copy a new one!\n");
-		//system("/usr/local/snk_desktop/backup.sh");  //by allen
-		//run_command("./remount.sh",NULL,REMOUNT_DIR);
-		result = CFG_ERROR;
-	}
-	else
-	{
-		fclose(file);
-		ret = check_file_crc(filename);
-		if(ret)
-			result = CFG_SUCCESS;
-		else
-		{
-			debug_print("%s  %d  CRC ERROR!Restore the config file now!\n",__FILE__,__LINE__);
-			system("/usr/local/snk_desktop/backup.sh");
-			add_crc_file(filename);
-			ret = check_file_crc(filename);
-			if(ret)
-				result = CFG_SUCCESS;
-		}
-	}
-	return result;
-}
-
 int cfg_check_config_file(char *filename)
 {
 	FILE *file;
@@ -159,32 +117,6 @@ int cfg_check_config_file(char *filename)
 	else
 		fclose(file);
 	return result;
-}
-
-int check_crc_file(char *filename)
-{
-	FILE *file;
-	int ret;
-	file = fopen(filename, "r");
-	if (file == NULL)
-	{
-		return CFG_ERROR;
-	}
-	fclose(file);
-	
-	//check crc	
-	ret = check_file_crc(filename);
-	if(ret)
-	{
-		debug_print("CRC OK!\n");
-		return CFG_SUCCESS;
-	}
-	else
-	{
-		debug_print("CRC ERROR!\n");
-		remove(filename);
-		return CFG_ERROR;
-	}
 }
 /* Add a new key to the configuration */
 int cfg_add_key(ConfigFile *cf, char *key, char *value)
@@ -342,7 +274,6 @@ int cfg_write_config_file(ConfigFile *cf, char *filename)
 		fflush(file);
 		fsync(fileno(file));
 		fclose(file);
-		add_crc_file(filename);
 	} 
 	else {
 		debug_print("config: Failed opening %s for write access.\n", filename);

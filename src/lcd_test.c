@@ -10,7 +10,7 @@
 static SDL_Color Bcolor = {0,0,0};
 void flush_screen(int mode)
 {
-	unsigned char buff[32] = {0};
+	char buff[32] = {0};
 	FILE *brt_fd = fopen(FLUSH_DEVICE, "w");
 	sprintf(buff,"%d",mode);
 	fwrite(buff,32,1,brt_fd);

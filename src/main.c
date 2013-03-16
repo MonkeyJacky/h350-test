@@ -17,7 +17,7 @@
 #include "init_parameters.h"
 
 typedef struct{
-    unsigned char* item_key_word;
+    char* item_key_word;
     int (*item_testing_func)(struct test_Parameters *test_para);
 }test_orders_;
 

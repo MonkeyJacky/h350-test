@@ -1,7 +1,6 @@
 # The H350-test Tool #
 
 use for H350 board testing.
-
 This can work only on h350 board, I'll change it work on PC later.
 
 ## To prepare? ##
@@ -9,11 +8,13 @@ This can work only on h350 board, I'll change it work on PC later.
 * To ensure that your computer's equipped with the SDL library.
 * Get mipsel compile tools, extract it under '/opt/' path.
 
+
 ## Building from source ##
 
 1. Make under the root path:
     * On Ubuntu: make
     * Haven't ran on other systems.
+
 
 ## How's the function ##
 
@@ -52,4 +53,4 @@ This can work only on h350 board, I'll change it work on PC later.
     * Attempts to connect three times, each call to the ping command to determine whether the connection was successful.
 
 11. Bat-voltage test:
-    *The middle of the screen will display the power value read. 
+    * The middle of the screen will display the power value read. 

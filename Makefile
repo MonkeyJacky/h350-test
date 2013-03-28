@@ -8,7 +8,7 @@ LIBPATH    := $(TOOLCHAINDIR)/usr/lib
 ARCH	:= mipsel-linux-
 CC	:= ${BINPATH}/$(ARCH)gcc
 CFLAGS	:= -O3  -Wall -s -fomit-frame-pointer -funroll-loops  -I$(TOOLCHAINDIR)/usr/include -I$(TOOLCHAINDIR)/usr/include/SDL
-LDFLAG := -s -lSDLmain -lSDL -lSDL_image -lSDL_ttf -lSDL_mixer -lconfuse -lpthread
+LDFLAG := -s -lSDLmain -lSDL -lSDL_image -lSDL_ttf -lSDL_mixer
 
 ifneq ($(notdir $(CURDIR)), $(BUILD))
 

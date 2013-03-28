@@ -178,12 +178,12 @@ tmp = NULL;
 
 void cfg_free_config_file_struct(ConfigFile *cf)
 {
-	int i;
-	for (i = 0; i < cf->lastkey; i++) {
-		if (cf->key[i]) deep_free(cf->key[i]);
-		if (cf->value[i]) deep_free(cf->value[i]);
-	}
-	cf->lastkey = -1;
+    int i;
+    for (i = 0; i < cf->lastkey; i++) {
+	deep_free(cf->key[i]);
+	deep_free(cf->value[i]);
+    }
+    cf->lastkey = 0;
 }
 
 /* Loads a config file from disk */

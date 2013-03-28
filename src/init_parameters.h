@@ -35,6 +35,19 @@
 
 #define FAIL (-1)
 #define PASS 0
+//*********************************************************
+#define RESULT_CONFIG_FILE "result_file.conf"
+#define JOYSTICK_RESULT "joystick_result"
+#define KEYPAD_RESULT "keypad_result"
+#define HEADPHONE_RESULT "headphone_result"
+#define SPEAKER_RESULT "speaker_result"
+#define LCD_RESULT "lcd_result"
+#define TFCARD_RESULT "tfcard_result"
+#define AVOUT_RESULT "avout_result"
+#define HDMI_RESULT "hdmi_result"
+#define WIFI_RESULT "wifi_result"
+#define INTERNAL_CARD_RESULT "internal_card_result"
+#define BAT_RESULT "bat_result"
 
 struct key_rect_para{
     int	*x;

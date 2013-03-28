@@ -187,16 +187,74 @@ void deinit_res(struct test_Parameters *test_para)
     cfg_free_config_file_struct(&test_cf);
 }
 
-int init_result_flag(struct test_Parameters *test_para)
+char* test_result_keywords_array[] = {
+    JOYSTICK_RESULT,
+    KEYPAD_RESULT,
+    HEADPHONE_RESULT,
+    SPEAKER_RESULT,
+    LCD_RESULT,
+    TFCARD_RESULT,
+    AVOUT_RESULT,
+    HDMI_RESULT,
+    WIFI_RESULT,
+    INTERNAL_CARD_RESULT,
+    BAT_RESULT,
+};
+
+static ConfigFile result_cf;
+static int result_cf_init(void)
+{
+    int ret = CFG_SUCCESS;
+    cfg_init_config_file_struct(&result_cf);
+
+    ret |= cfg_check_config_file(RESULT_CONFIG_FILE);
+
+    ret |= cfg_read_config_file(&result_cf,RESULT_CONFIG_FILE);
+
+    return ret;
+}
+
+static int init_result_conf(struct test_Parameters *test_para)
 {
     int i;
 
-    for(i = 0; i < test_para->total_num; i++)
-    {
-	test_para->result_flag[i] = -1;
+    if( result_cf_init() < 0 ) { // if result config file init fail, made a default result.
+	for(i = 0; i<test_para->total_num; i++) {
+	    if ( cfg_add_key(&result_cf,test_result_keywords_array[i],"-1") < 0 ) {
+		return False;
+	    }
+	}
+
+	cfg_write_config_file(&result_cf,RESULT_CONFIG_FILE);
+
+	if( result_cf_init() < 0 )
+	    return False;
     }
 
     return True;
 }
 
+int init_result_flag(struct test_Parameters *test_para)
+{
+    int i;
+
+    if(init_result_conf(test_para) < 0)
+    {
+	return False;
+    }
+
+    for(i = 0; i < test_para->total_num; i++)
+    {
+	test_para->result_flag[i] =
+	    cfg_get_key_value_to_int(result_cf,test_result_keywords_array[i]);
+	debug_print("result_flag[%d] is %d\n",i,test_para->result_flag[i]);
+    }
+
+    return True;
+}
+
+void deinit_result_conf()
+{
+    cfg_free_config_file_struct(&result_cf);
+}
 

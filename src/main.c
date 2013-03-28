@@ -79,8 +79,11 @@ int main(void)
 	debug_print("Get test order num error!\n");
     }
 
+    store_result_flag(&test_para);
+
     deinit_key_pad();
     deinit_res(&test_para);
+    deinit_result_conf();
     deinit_sdl();
     flush_screen(0);
     return 0;

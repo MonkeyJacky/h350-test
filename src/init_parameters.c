@@ -214,6 +214,22 @@ static int result_cf_init(void)
     return ret;
 }
 
+int store_result_flag(struct test_Parameters *test_para)
+{
+    int i;
+
+    for(i = 0; i<test_para->total_num; i++){
+	if ( cfg_add_key(&result_cf,test_result_keywords_array[i],test_para->result_flag[i]) < 0 ) {
+	    return False;
+	}
+    }
+
+    if( cfg_write_config_file(&result_cf,RESULT_CONFIG_FILE) < 0 )
+	return False;
+
+    return True;
+}
+
 static int init_result_conf(struct test_Parameters *test_para)
 {
     int i;
@@ -225,7 +241,8 @@ static int init_result_conf(struct test_Parameters *test_para)
 	    }
 	}
 
-	cfg_write_config_file(&result_cf,RESULT_CONFIG_FILE);
+	if( cfg_write_config_file(&result_cf,RESULT_CONFIG_FILE) < 0 )
+	    return False;
 
 	if( result_cf_init() < 0 )
 	    return False;
@@ -253,7 +270,7 @@ int init_result_flag(struct test_Parameters *test_para)
     return True;
 }
 
-void deinit_result_conf()
+void deinit_result_conf(void)
 {
     cfg_free_config_file_struct(&result_cf);
 }

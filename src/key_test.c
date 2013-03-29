@@ -125,6 +125,7 @@ static void key_release_warning(void)
 
     test_words_show("Please release the key!",Bcolor);
 
+#ifdef H350
     while(key_loop)
     {
 	key_read_value = key_pad_read();
@@ -134,6 +135,7 @@ static void key_release_warning(void)
 	if(key_read_value == 0)
 	    key_loop = 0;
     }
+#endif
 }
 
 int decision_loop(void)
@@ -143,6 +145,7 @@ int decision_loop(void)
 
     test_words_show("Press A for pass, B for fail",Bcolor);
 
+#ifdef H350
     while(decision_flag)
     {
 	key_read_value = key_pad_read();
@@ -161,6 +164,7 @@ int decision_loop(void)
 
 	usleep(100*1000);
     }
+#endif
 
     return FAIL;
 }
@@ -266,7 +270,7 @@ static void draw_key_view(struct key_test_para *para)
     sdl_set_pen(&Bcolor, 1);
     for(i=0; i < para->key_num; i++)
     {
-	debug_print("x is %d, y is %d, w is %d, h is %d\n",para->key_rect[i].x,para->key_rect[i].y,para->key_rect[i].w,para->key_rect[i].h);
+	/*debug_print("x is %d, y is %d, w is %d, h is %d\n",para->key_rect[i].x,para->key_rect[i].y,para->key_rect[i].w,para->key_rect[i].h);*/
     }
 
     for(i=0; i < para->key_num; i++)
@@ -339,6 +343,7 @@ int key_test(struct test_Parameters *test_para)
     key_image_init();
 
     draw_key_view(&key_para);
+#ifdef H350
     while(key_loop)
     {
 	key_read_value = key_pad_read();
@@ -347,6 +352,7 @@ int key_test(struct test_Parameters *test_para)
 	    break;
 	usleep(150*1000);
     }
+#endif
 
     deinit_flag_res(&key_para);
     key_image_deinit();
@@ -406,6 +412,7 @@ int joystick_test(struct test_Parameters *test_para)
     test_words_show("Joystick test",Bcolor);
     key_release_warning();
     draw_key_view(&key_para);
+#ifdef H350
     while(key_loop)
     {
 	key_read_value = key_pad_read();
@@ -414,6 +421,7 @@ int joystick_test(struct test_Parameters *test_para)
 	    break;
 	usleep(150*1000);
     }
+#endif
 
     deinit_flag_res(&key_para);
     key_image_deinit();

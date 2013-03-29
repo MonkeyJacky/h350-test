@@ -81,6 +81,7 @@ int tfcard_test(struct test_Parameters *test_para)
     int tfcard_flag = 1;
 
     test_words_show("External card test",Bcolor);
+#ifdef H350
     while(tfcard_loop)
     {
 	if(once){
@@ -125,6 +126,7 @@ int tfcard_test(struct test_Parameters *test_para)
 
 	usleep(500*1000);
     }
+#endif
 
     draw_decision_pic(FAIL);
     return False;

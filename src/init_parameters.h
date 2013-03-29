@@ -35,6 +35,7 @@
 
 #define FAIL (-1)
 #define PASS 0
+#define UNTEST 2
 //*********************************************************
 #define RESULT_CONFIG_FILE "result_file.conf"
 #define JOYSTICK_RESULT "joystick_result"
@@ -81,5 +82,5 @@ int init_res(struct test_Parameters *test_para);
 void deinit_res(struct test_Parameters *test_para);
 int init_result_flag(struct test_Parameters *test_para);
 void deinit_result_conf(void);
-int store_result_flag(struct test_Parameters *test_para);
+int store_result_flag(struct test_Parameters *test_para, int item);
 #endif

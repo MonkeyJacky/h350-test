@@ -1,6 +1,6 @@
 # The H350-test Tool #
 
-Use for H350 board testing. This can work only on h350 board, I'll change it work on PC later.
+Use for H350 board testing. It can work on H350 board and ubuntu OS now (other OS haven't tested).
 
 
 ## To prepare? ##
@@ -12,7 +12,8 @@ Use for H350 board testing. This can work only on h350 board, I'll change it wor
 ## Building from source ##
 
 1. Make under the root path:
-    * On Ubuntu: make
+    * Run on Ubuntu: make -f Makefile.ubuntu
+    * Run on H350 board: make -f Makefile.h350
     * Haven't ran on other systems.
 
 
@@ -44,3 +45,6 @@ Use for H350 board testing. This can work only on h350 board, I'll change it wor
     * Attempts to connect three times, each call to the ping command to determine whether the connection was successful.
 11. Bat-voltage test:
     * The middle of the screen will display the power value read. 
+
+
+## The follow-up function on Continuous Improvement ... ##

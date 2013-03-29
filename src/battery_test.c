@@ -48,12 +48,16 @@ int battery_voltage_test(struct test_Parameters *test_para)
     char temp_str[MAX_SIZE] = {0};
 
     test_words_show("Battery voltage test",Bcolor);
+#ifdef H350
     if(init_battery_dev() < 0)
 	return False;
+#endif
 
     while(bat_test_loop)
     {
+#ifdef H350
 	voltage =  (float) get_bat_val();
+#endif
 	sleep(1);
 	memset(temp_str,0,MAX_SIZE);
 	sprintf(temp_str,"Voltage : %0.2f V",voltage/1000);
@@ -65,7 +69,9 @@ int battery_voltage_test(struct test_Parameters *test_para)
 	}
     }
 
+#ifdef H350
     deinit_battery_dev();
+#endif
 
     return True;
 }

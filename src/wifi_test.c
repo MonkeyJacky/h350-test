@@ -149,11 +149,13 @@ int wifi_test(struct test_Parameters *test_para)
     debug_print("host ip is %s\n",wifi_para.host_ip);
     debug_print("client ip is %s\n",wifi_para.client_ip);
     test_words_show("Wifi test",Bcolor);
+#ifdef H350
     init_wifi_driver(&wifi_para);
 
     ret = connection_loop(&wifi_para);
 
     deinit_wifi_driver(&wifi_para);
+#endif
     if(!ret)
     {
 	draw_decision_pic(PASS);

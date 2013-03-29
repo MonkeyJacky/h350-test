@@ -168,16 +168,22 @@ static int hp_detect(void)
 int speaker_test(struct test_Parameters *test_para)
 {
     int speaker_test_flag = False;
+#ifdef H350
     if(audio_init() < 0)
 	return False;
 
     set_volume(50);
+#endif
     test_words_show("Speaker sound test",Bcolor);
     test_words_show("Play now....",Bcolor);
+#ifdef H350
     audio_sound_out(TEST_SOUND);
+#endif
     speaker_test_flag = decision_loop();
 
+#ifdef H350
     deinit_audio();
+#endif
 
     return speaker_test_flag;
 }
@@ -188,12 +194,15 @@ int hp_test(struct test_Parameters *test_para)
     int hp_loop = 1;
     int audio_out_count = 0;
 
+#ifdef H350
     if(audio_init() < 0 || init_headphone() < 0)
 	return False;
 
     set_volume(50);
+#endif
     test_words_show("Headphone sound test",Bcolor);
     test_words_show("Please insert the headphone...",Bcolor);
+#ifdef H350
     while(hp_loop)
     {
 	if(hp_detect() == 1)
@@ -222,5 +231,6 @@ int hp_test(struct test_Parameters *test_para)
     }
 
     deinit_headphone();
+#endif
     return hp_test_flag;
 }

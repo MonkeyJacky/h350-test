@@ -46,7 +46,8 @@ void test_loop(struct test_Parameters *test_para,int num,int order_array_size)
 	{
 	    debug_print("This is %s test!\n",test_order_array[i].item_key_word);
 	    test_para->result_flag[i] = test_order_array[i].item_testing_func(test_para);
-	    PRINT_VALUE(test_para->result_flag[i],%d);
+	    store_result_flag(test_para,i);
+	    debug_print("test_para->result_flag[%d] is %d\n",i,test_para->result_flag[i]);
 	}
     }
 }
@@ -66,9 +67,13 @@ int main(void)
     if (init_sdl(&test_para) < 0)
 	exit(0);
 
+#ifdef H350
     init_key_pad();
+#endif
     test_order_array_size = sizeof(test_order_array) / sizeof(test_orders_);
+#ifdef H350
     flush_screen(1);
+#endif
     if(test_para.total_num > 0 && test_para.total_num <= test_order_array_size)
     {
 	for(i = 0; i < test_para.total_num; i++)
@@ -79,12 +84,14 @@ int main(void)
 	debug_print("Get test order num error!\n");
     }
 
-    store_result_flag(&test_para);
-
+#ifdef H350
     deinit_key_pad();
+#endif
     deinit_res(&test_para);
     deinit_result_conf();
     deinit_sdl();
+#ifdef H350
     flush_screen(0);
+#endif
     return 0;
 }

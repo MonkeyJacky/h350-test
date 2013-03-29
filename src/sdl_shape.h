@@ -6,7 +6,11 @@
 #include <SDL_ttf.h>
 #include "init_parameters.h"
 
+#ifdef H350
 #define FONT_PATH "/usr/share/font/l009.ttf"
+#else
+#define FONT_PATH "res/l009.ttf"
+#endif
 
 int init_sdl(struct test_Parameters *test_para);
 void deinit_sdl(void);

@@ -188,6 +188,7 @@ int avout_test(struct test_Parameters *test_para)
 
     test_words_show("Av out test",Bcolor);
 
+#ifdef H350
     if(init_tvout_pic() < 0)
     {
 	draw_decision_pic(FAIL);
@@ -219,6 +220,7 @@ int avout_test(struct test_Parameters *test_para)
 
     deinit_av_dev();
     deinit_tvout_pic();
+#endif
 
     return decision_loop();
 }

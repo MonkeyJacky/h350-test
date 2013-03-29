@@ -38,18 +38,24 @@ int internal_card_test(struct test_Parameters *test_para)
 
     test_words_show("Writting now...",Bcolor);
     start = SDL_GetTicks();
+#ifdef H350
     write_test_file(_20MB_);
+#endif
     last = SDL_GetTicks() - start;
     debug_print("%s %d lasttime is %d\n",__FILE__,__LINE__,last);
 
+#ifdef H350
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"rm %s",TEST_FILE);
     ret = system(temp_command);
+#endif
 
     if(ret < 0){
 	debug_print("rm %s error",TEST_FILE);
     }else{
+#ifdef H350
 	sync();
+#endif
     }
 
     if(last < 10000 && last > 1000)

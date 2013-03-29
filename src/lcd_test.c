@@ -73,6 +73,7 @@ int lcd_test(struct test_Parameters *test_para)
     test_words_show("Lcd and backlight test",Bcolor);
 
     PRINT_VALUE(test_para->screen_info.buffer_size,"%d");
+#ifdef H350
     if(init_fb(test_para->screen_info.buffer_size) < 0)
     {
 	draw_decision_pic(FAIL);
@@ -89,6 +90,7 @@ int lcd_test(struct test_Parameters *test_para)
 	adjust_backlight(i);
 
     deinit_fb(test_para->screen_info.buffer_size);
+#endif
     /*return decision_warning_show();*/
     return decision_loop();
 }

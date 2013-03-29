@@ -1,0 +1,33 @@
+#!/usr/bin/python
+
+import sys
+import os
+
+Main_makefile = 'Makefile'
+Makefile_Keyword = 'Makefile.'
+Valid_suffix = ['ubuntu','h350']
+
+if len(sys.argv) == 2:
+    input_suffix = sys.argv[1]
+    print 'input suffix is ' + input_suffix
+    for suffix in Valid_suffix:
+        if cmp(suffix,input_suffix) == 0:
+            main_mk_fp = open(Main_makefile)
+            contents = main_mk_fp.readlines()
+            main_mk_fp.close()
+            os.remove(Main_makefile)
+            new_mk_fp = open(Main_makefile,'w')
+            for each_line in contents:
+                keyword_offset = each_line.find(Makefile_Keyword)
+                if keyword_offset >= 0:
+                    replaced_suffix_offset = keyword_offset + len(Makefile_Keyword)
+                    replaced_suffix = each_line[replaced_suffix_offset:-1]
+                    new_mk_fp.write(each_line.replace(replaced_suffix,input_suffix))
+                else:
+                    new_mk_fp.write(each_line)
+else:
+    print 'Please inputting the second parameter:'
+    print '1. Input \'ubuntu\' for making a file which can work on ubuntu OS'
+    print '2. Input \'h350\' for making a file which can run on h350 board'
+    print '3. After input, you can just click \'make\' to build the source code'
+    print '4. Or you can manually modify the file to achieve the same purpose'

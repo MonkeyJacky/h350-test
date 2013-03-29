@@ -14,6 +14,9 @@ Use for H350 board testing. It can work on H350 board and ubuntu OS now (other O
 1. Make under the root path:
     * Run on Ubuntu: make -f Makefile.ubuntu
     * Run on H350 board: make -f Makefile.h350
+    * If you have the python, run configure to make more easier, after run 
+      the configure, you can just click 'make' to build the source code.
+      Or you can manually modify the file to achieve the same purpose.
     * Haven't ran on other systems.
 
 

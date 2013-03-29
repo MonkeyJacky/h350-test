@@ -5,7 +5,7 @@
 
 #include "internal_card_test.h"
 #include "init_parameters.h"
-#include "sdl_shape.h"
+#include "sdl_interface.h"
 #include "debug.h"
 static SDL_Color Bcolor = {0,0,0};
 static FILE* card_fp = NULL;

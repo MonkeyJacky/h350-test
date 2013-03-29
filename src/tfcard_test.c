@@ -4,7 +4,7 @@
 #include "init_parameters.h"
 #include "tfcard_test.h"
 #include "debug.h"
-#include "sdl_shape.h"
+#include "sdl_interface.h"
 
 static SDL_Color Bcolor = {0,0,0};
 static FILE* tfcard_fp = NULL;

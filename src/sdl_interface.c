@@ -3,7 +3,7 @@
 
    ------------------------------------------------------*/
 
-#include "sdl_shape.h"
+#include "sdl_interface.h"
 #include "debug.h"
 #include "init_parameters.h"
 

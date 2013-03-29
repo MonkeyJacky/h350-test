@@ -9,7 +9,7 @@
 #include "init_parameters.h"
 #include "debug.h"
 #include "tvout_test.h"
-#include "sdl_shape.h"
+#include "sdl_interface.h"
 #include "key_test.h"
 #include "lcd_test.h"
 

@@ -13,7 +13,7 @@
 #include "tvout_test.h"
 #include "sound_test.h"
 #include "debug.h"
-#include "sdl_shape.h"
+#include "sdl_interface.h"
 #include "init_parameters.h"
 
 typedef struct{

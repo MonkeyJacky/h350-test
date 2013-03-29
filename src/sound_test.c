@@ -11,7 +11,7 @@
 #include "debug.h"
 #include "sound_test.h"
 #include "key_test.h"
-#include "sdl_shape.h"
+#include "sdl_interface.h"
 
 static SDL_Color Bcolor = {0,0,0};
 static int audio_fd = -1;

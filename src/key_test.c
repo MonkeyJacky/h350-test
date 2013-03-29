@@ -5,7 +5,7 @@
 
 #include "key_test.h"
 #include "debug.h"
-#include "sdl_shape.h"
+#include "sdl_interface.h"
 #include "init_parameters.h"
 
 static SDL_Color Bcolor = {0,0,0};

@@ -3,7 +3,7 @@
 #include "battery_test.h"
 #include "init_parameters.h"
 #include "debug.h"
-#include "sdl_shape.h"
+#include "sdl_interface.h"
 
 static SDL_Color Bcolor = {0,0,0};
 static FILE* fp = NULL;

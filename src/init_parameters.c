@@ -217,9 +217,12 @@ static int result_cf_init(void)
 int store_result_flag(struct test_Parameters *test_para)
 {
     int i;
+    char result_buffer[5];
 
     for(i = 0; i<test_para->total_num; i++){
-	if ( cfg_add_key(&result_cf,test_result_keywords_array[i],test_para->result_flag[i]) < 0 ) {
+	memset(result_buffer,0,5);
+	sprintf(result_buffer,"%d",test_para->result_flag[i]);
+	if ( cfg_add_key(&result_cf,test_result_keywords_array[i],result_buffer) < 0 ) {
 	    return False;
 	}
     }

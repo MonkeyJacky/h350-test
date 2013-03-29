@@ -68,10 +68,14 @@ void deinit_key_pad(void)
 unsigned int key_pad_read(void)
 {
     unsigned int keyval,keyval1;
+    int ret = 0;
 
-    read(key_pad, &keyval, 4);
+    ret |= read(key_pad, &keyval, 4);
     usleep(10000);
-    read(key_pad, &keyval1, 4);
+    ret |= read(key_pad, &keyval1, 4);
+
+    if(ret < 0)
+	debug_print("read keypad error!\n");
     //debug_print("value is 0x%x :0x%x\n",keyval,keyval1);
     if(keyval == keyval1)
 	return keyval;

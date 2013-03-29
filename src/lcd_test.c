@@ -57,9 +57,12 @@ void draw_color_bar(unsigned int * temp_fb,unsigned int index,int width,int heig
 void adjust_backlight(int bklight_value)
 {
     char temp_command[MAX_SIZE] = {0};
+    int ret = 0;
 
     sprintf(temp_command,"echo %d > %s",bklight_value,BACKLIGHT_DEV);
-    system(temp_command);
+    ret = system(temp_command);
+    if(ret < 0)
+	debug_print("echo bklight value error!\n");
     usleep(10*1000);
 }
 

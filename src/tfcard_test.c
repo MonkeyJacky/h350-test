@@ -8,7 +8,7 @@
 
 static SDL_Color Bcolor = {0,0,0};
 static FILE* tfcard_fp = NULL;
-static int tfcard_scan_init()
+static int tfcard_scan_init(void)
 {
     if(!tfcard_fp)
     {
@@ -22,14 +22,15 @@ static int tfcard_scan_init()
     return True;
 }
 
-static int get_tfcard_state()
+static int get_tfcard_state(void)
 {
     char tfcard_state[20] = {0};
     int temp_draw_tf_card = -1;
     if(tfcard_fp)
     {
 	rewind(tfcard_fp);
-	fgets(tfcard_state,20,tfcard_fp);
+	if(!fgets(tfcard_state,20,tfcard_fp))
+	    return temp_draw_tf_card;
 	if(strstr(tfcard_state,"no"))
 	{
 	    temp_draw_tf_card = False;

@@ -53,17 +53,22 @@ static void init_wifi_para(struct Wifi_parameters *wifi_para)
 static int init_wifi_driver(struct Wifi_parameters *wifi_para)
 {
     char temp_command[MAX_SIZE];
+    int ret = -1;
 
     test_words_show("Loading wifi module...",Bcolor);
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"insmod %s",wifi_para->driver_dir);
-    system(temp_command);
+    ret |= system(temp_command);
     sleep(1);
+    if(ret < 0)
+	return False;
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"ifconfig %s up",wifi_para->network_card);
-    system(temp_command);
+    ret |= system(temp_command);
     sleep(1);
+    if(ret < 0)
+	return False;
 
     return True;
 }
@@ -71,23 +76,26 @@ static int init_wifi_driver(struct Wifi_parameters *wifi_para)
 static void deinit_wifi_driver(struct Wifi_parameters *wifi_para)
 {
     char temp_command[MAX_SIZE];
+    int ret = 0;
 
     test_words_show("Unloading wifi module...",Bcolor);
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"killall -9 %s",wifi_para->wpa_supplicant);
-    system(temp_command);
+    ret |= system(temp_command);
     usleep(100*1000);
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"ifconfig %s down",wifi_para->network_card);
-    system(temp_command);
+    ret |= system(temp_command);
     usleep(500*1000);
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"rmmode %s",wifi_para->driver_dir);
-    system(temp_command);
+    ret |= system(temp_command);
     usleep(500*1000);
 
+    if(ret < 0)
+	debug_print("deinit wifi driver error");
 }
 
 static int connection_loop(struct Wifi_parameters *wifi_para)
@@ -98,17 +106,17 @@ static int connection_loop(struct Wifi_parameters *wifi_para)
     test_words_show("Searching wifi hotspots...",Bcolor);
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"iwlist %s scanning",wifi_para->network_card);
-    system(temp_command);
+    ret = system(temp_command);
     sleep(1);
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"%s -Dwext -i%s -c %s -dd &",wifi_para->wpa_supplicant,wifi_para->network_card,wifi_para->conf);
-    system(temp_command);
+    ret = system(temp_command);
     sleep(3);
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"ifconfig %s %s",wifi_para->network_card,wifi_para->client_ip);
-    system(temp_command);
+    ret = system(temp_command);
     sleep(1);
 
     test_words_show("Try to connect...",Bcolor);

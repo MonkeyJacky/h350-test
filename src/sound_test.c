@@ -92,6 +92,7 @@ static int audio_sound_out(char* musicfile)
     int read_count = 0;
     char audio_buffer[BUF_SIZE] = {0};
     int get_num = 0;
+    int write_num = 0;
 
     if(!src_music)
     {
@@ -108,7 +109,12 @@ static int audio_sound_out(char* musicfile)
 	if(read_count < 10)
 	    continue;
 
-	write(audio_fd,audio_buffer,get_num);
+	write_num = write(audio_fd,audio_buffer,get_num);
+	if(write_num != get_num)
+	{
+	    debug_print("write audio error\n");
+	    break;
+	}
 
 	if(get_num != BUF_SIZE)
 	{
@@ -151,7 +157,8 @@ static int hp_detect(void)
     if(hp_fp)
     {
 	rewind(hp_fp);
-	fgets(buf,9,hp_fp);
+	if(!fgets(buf,9,hp_fp))
+	    return 0;
 	sscanf(buf,"%d",&n);
     }
 

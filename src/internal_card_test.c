@@ -32,6 +32,7 @@ int internal_card_test(struct test_Parameters *test_para)
 {
     int start = 0,last = 0;
     char temp_command[MAX_SIZE] = {0};
+    int ret = 0;
 
     test_words_show("Internal card writting test",Bcolor);
 
@@ -43,8 +44,13 @@ int internal_card_test(struct test_Parameters *test_para)
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"rm %s",TEST_FILE);
-    system(temp_command);
-    sync();
+    ret = system(temp_command);
+
+    if(ret < 0){
+	debug_print("rm %s error",TEST_FILE);
+    }else{
+	sync();
+    }
 
     if(last < 10000 && last > 1000)
     {

@@ -81,4 +81,5 @@ int init_res(struct test_Parameters *test_para);
 void deinit_res(struct test_Parameters *test_para);
 int init_result_flag(struct test_Parameters *test_para);
 void deinit_result_conf(void);
+int store_result_flag(struct test_Parameters *test_para);
 #endif

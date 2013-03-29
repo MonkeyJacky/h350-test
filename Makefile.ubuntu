@@ -1,12 +1,13 @@
 TARGET     := test.dge
 BUILD      := build
-TOOLCHAINDIR := /opt/mipsel-linux-uclibc
+#TOOLCHAINDIR := /opt/mipsel-linux-uclibc
 SOURCES    := src
 BINPATH    := ${TOOLCHAINDIR}/usr/bin
 LIBPATH    := $(TOOLCHAINDIR)/usr/lib
 
 ARCH	:= mipsel-linux-
-CC	:= ${BINPATH}/$(ARCH)gcc
+#CC	:= ${BINPATH}/$(ARCH)gcc
+CC	:= gcc
 CFLAGS	:= -O3  -Wall -s -fomit-frame-pointer -funroll-loops  -I$(TOOLCHAINDIR)/usr/include -I$(TOOLCHAINDIR)/usr/include/SDL
 LDFLAG := -s -lSDLmain -lSDL -lSDL_image -lSDL_ttf -lSDL_mixer
 
@@ -24,7 +25,7 @@ export OFILES := $(CFILES:.c=.o)
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile.ubuntu
 
 rebuild: clean $(BUILD)
 

@@ -50,7 +50,7 @@ static int set_lcd_control_mode(int mode)
     if(mode == PANEL_MODE_LCD)
     {
 	sprintf(temp_command,"echo 0 > %s",HDMI_PROC_DEV);
-	system(temp_command);
+	ret = system(temp_command);
 	usleep(100*1000);
     }
 
@@ -76,7 +76,7 @@ static int set_lcd_control_mode(int mode)
 	{
 	    memset(temp_command,0,MAX_SIZE);
 	    sprintf(temp_command,"echo 1 > %s",HDMI_IC_DEV);
-	    system(temp_command);
+	    ret = system(temp_command);
 	    /*while(i--)*/
 		/*usleep(100*1000);*/
 	}
@@ -174,7 +174,8 @@ static int get_av_out_mode()
     if(av_fp)
     {
 	rewind(av_fp);
-	fgets(buf, 127, av_fp);
+	if ( !fgets(buf, 127, av_fp) )
+	    return 0;
 	sscanf(buf, "%d", &avout_mode);
     }
 

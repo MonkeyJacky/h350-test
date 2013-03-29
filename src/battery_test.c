@@ -32,7 +32,8 @@ static int get_bat_val(void)
     if(fp)
     {
 	rewind(fp);
-	fgets(buf,127,fp);
+	if(!fgets(buf,127,fp))
+	    return 0;
 	sscanf(buf,"%d",&mvolts);
     }
 

@@ -161,6 +161,48 @@ int init_res(struct test_Parameters *test_para)
 	return False;
     }
 
+    test_para->result_view_para.array_size =
+	cfg_get_key_value_to_int(test_cf,RESULT_VIEW_NUM);
+    PRINT_VALUE(test_para->result_view_para.array_size,%d);
+    if(test_para->result_view_para.array_size < 0)
+    {
+	debug_print("result array size init error!\n");
+	return False;
+    }
+    test_para->result_view_para.result_words =
+	malloc(sizeof(char *) * test_para->result_view_para.array_size);
+    test_para->result_view_para.fail_color =
+	malloc(sizeof(int) * test_para->result_view_para.array_size);
+    test_para->result_view_para.pass_color =
+	malloc(sizeof(int) * test_para->result_view_para.array_size);
+    test_para->result_view_para.untest_color =
+	malloc(sizeof(int) * test_para->result_view_para.array_size);
+
+    for(i = 0; i < test_para->result_view_para.array_size; i++)
+    {
+	test_para->result_view_para.result_words[i] =
+	    malloc(sizeof(char) * MAX_SIZE);
+	memset(test_para->result_view_para.result_words[i],0,MAX_SIZE);
+    }
+
+    if(get_array_from_conf_str(test_para->result_view_para.result_words,test_para->result_view_para.array_size,TEST_RESULT_WORD,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->result_view_para.fail_color,test_para->result_view_para.array_size,FAIL_COLOR,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->result_view_para.pass_color,test_para->result_view_para.array_size,PASS_COLOR,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->result_view_para.untest_color,test_para->result_view_para.array_size,UNTEST_COLOR,test_cf) < 0)
+	return False;
+
+    for(i = 0; i < test_para->result_view_para.array_size; i++)
+	debug_print("test_para->result_view_para.result_words[%d] is %s\n",i,test_para->result_view_para.result_words[i]);
+    for(i = 0; i < test_para->result_view_para.array_size; i++)
+	debug_print("test_para->result_view_para.fail_color[%d] is %d\n",i,test_para->result_view_para.fail_color[i]);
+    for(i = 0; i < test_para->result_view_para.array_size; i++)
+	debug_print("test_para->result_view_para.pass_color[%d] is %d\n",i,test_para->result_view_para.pass_color[i]);
+    for(i = 0; i < test_para->result_view_para.array_size; i++)
+	debug_print("test_para->result_view_para.untest_color[%d] is %d\n",i,test_para->result_view_para.untest_color[i]);
+
     return True;
 }
 
@@ -187,20 +229,6 @@ void deinit_res(struct test_Parameters *test_para)
     cfg_free_config_file_struct(&test_cf);
 }
 
-char* test_result_keywords_array[] = {
-    LCD_RESULT,
-    KEYPAD_RESULT,
-    JOYSTICK_RESULT,
-    WIFI_RESULT,
-    TFCARD_RESULT,
-    BAT_RESULT,
-    INTERNAL_CARD_RESULT,
-    HDMI_RESULT,
-    AVOUT_RESULT,
-    SPEAKER_RESULT,
-    HEADPHONE_RESULT,
-};
-
 static ConfigFile result_cf;
 static int result_cf_init(void)
 {
@@ -216,7 +244,6 @@ static int result_cf_init(void)
 
 int store_result_flag(struct test_Parameters *test_para, int item)
 {
-    int i;
     char result_buffer[5];
 
     if( item < 0 || item > test_para->total_num )
@@ -224,7 +251,7 @@ int store_result_flag(struct test_Parameters *test_para, int item)
 
     memset(result_buffer,0,5);
     sprintf(result_buffer,"%d",test_para->result_flag[item]);
-    if ( cfg_add_key(&result_cf,test_result_keywords_array[item],result_buffer) < 0 )
+    if ( cfg_add_key(&result_cf,test_para->test_order[item],result_buffer) < 0 )
 	return False;
 
     if( cfg_write_config_file(&result_cf,RESULT_CONFIG_FILE) < 0 )
@@ -242,7 +269,7 @@ static int init_result_conf(struct test_Parameters *test_para)
 	for(i = 0; i<test_para->total_num; i++) {
 	    memset(result_buffer,0,5);
 	    sprintf(result_buffer,"%d",UNTEST);
-	    if ( cfg_add_key(&result_cf,test_result_keywords_array[i],result_buffer) < 0 ) {
+	    if ( cfg_add_key(&result_cf,test_para->test_order[i],result_buffer) < 0 ) {
 		return False;
 	    }
 	}
@@ -269,7 +296,7 @@ int init_result_flag(struct test_Parameters *test_para)
     for(i = 0; i < test_para->total_num; i++)
     {
 	test_para->result_flag[i] =
-	    cfg_get_key_value_to_int(result_cf,test_result_keywords_array[i]);
+	    cfg_get_key_value_to_int(result_cf,test_para->test_order[i]);
 	debug_print("result_flag[%d] is %d\n",i,test_para->result_flag[i]);
     }
 

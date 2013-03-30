@@ -12,6 +12,15 @@
 #define FONT_PATH "res/l009.ttf"
 #endif
 
+struct _result_res{
+    SDL_Color Fail_color;
+    SDL_Color Pass_color;
+    SDL_Color Untest_color;
+    TTF_Font *font;
+    SDL_Surface **item_string;
+    SDL_Surface **result_string;
+};
+
 int init_sdl(struct test_Parameters *test_para);
 void deinit_sdl(void);
 void draw_decision_pic(int sel);
@@ -24,5 +33,6 @@ void sdl_set_pen(SDL_Color *color, int w);
 int sdl_get_pen_width();
 void sdl_draw_rect(SDL_Rect *rect);
 void sdl_draw_rect_solid(SDL_Rect *rect);
+void result_show(struct test_Parameters *test_para);
 
 #endif

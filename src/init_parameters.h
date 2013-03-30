@@ -49,6 +49,20 @@
 #define WIFI_RESULT "wifi_result"
 #define INTERNAL_CARD_RESULT "internal_card_result"
 #define BAT_RESULT "bat_result"
+//*********************************************************
+#define RESULT_VIEW_NUM "result_view_size"
+#define TEST_RESULT_WORD "test_result_word"
+#define FAIL_COLOR "fail_color"
+#define PASS_COLOR "pass_color"
+#define UNTEST_COLOR "untest_color"
+
+struct _result_view_para{
+    int array_size;
+    char** result_words;
+    int* fail_color;
+    int* pass_color;
+    int* untest_color;
+};
 
 struct key_rect_para{
     int	*x;
@@ -66,6 +80,7 @@ struct _screen_info_{
 
 struct test_Parameters{
     int total_num;
+    int test_offset;
     int key_num;
     int joykey_num;
     char** test_order;
@@ -74,6 +89,7 @@ struct test_Parameters{
     struct key_rect_para joykey_rect_array;
     struct _screen_info_ screen_info;
     struct _screen_info_ hdmi_info;
+    struct _result_view_para result_view_para;
 };
 
 int init_fb(int buffer_size);

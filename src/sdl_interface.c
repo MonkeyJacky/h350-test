@@ -1,6 +1,5 @@
 /* ---------------------------------------------------
-   shape.c
-
+draw interface.
    ------------------------------------------------------*/
 
 #include "sdl_interface.h"
@@ -82,6 +81,101 @@ void deinit_sdl(void)
     sdl_free_surface(pass_view);
     sdl_free_surface(fail_view);
     SDL_Quit();
+}
+
+static void result_res_init(struct test_Parameters *test_para, struct _result_res *result_res)
+{
+    int i;
+
+    result_res->Fail_color.r =
+	test_para->result_view_para.fail_color[0];
+    result_res->Fail_color.g =
+	test_para->result_view_para.fail_color[1];
+    result_res->Fail_color.b =
+	test_para->result_view_para.fail_color[2];
+
+    result_res->Pass_color.r =
+	test_para->result_view_para.pass_color[0];
+    result_res->Pass_color.g =
+	test_para->result_view_para.pass_color[1];
+    result_res->Pass_color.b =
+	test_para->result_view_para.pass_color[2];
+
+    result_res->Untest_color.r =
+	test_para->result_view_para.untest_color[0];
+    result_res->Untest_color.g =
+	test_para->result_view_para.untest_color[1];
+    result_res->Untest_color.b =
+	test_para->result_view_para.untest_color[2];
+
+    result_res->font = TTF_OpenFont(FONT_PATH,13);
+
+    result_res->result_string =
+	malloc(sizeof(SDL_Surface *) * test_para->total_num);
+    result_res->item_string =
+	malloc(sizeof(SDL_Surface *) * test_para->total_num);
+
+    for(i = 0; i < test_para->total_num; i++)
+    {
+	if(test_para->result_flag[i] == PASS)
+	{
+	    result_res->item_string[i] =
+		TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Pass_color);
+	    result_res->result_string[i] =
+		TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[1],result_res->Pass_color);
+	}
+	else if(test_para->result_flag[i] == FAIL)
+	{
+	    result_res->item_string[i] =
+		TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Fail_color);
+	    result_res->result_string[i] =
+		TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[0],result_res->Fail_color);
+	}
+	else if(test_para->result_flag[i] == UNTEST)
+	{
+	    result_res->item_string[i] =
+		TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Untest_color);
+	    result_res->result_string[i] =
+		TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[2],result_res->Untest_color);
+	}
+    }
+}
+
+static void result_res_deinit(struct test_Parameters *test_para, struct _result_res *result_res)
+{
+    int i;
+
+    for(i = 0; i < test_para->total_num; i++)
+    {
+	sdl_free_surface(result_res->item_string[i]);
+	sdl_free_surface(result_res->result_string[i]);
+    }
+
+    deep_free(result_res->item_string);
+    deep_free(result_res->result_string);
+}
+
+void result_show(struct test_Parameters *test_para)
+{
+    struct _result_res result_res;
+    SDL_Rect tmp_rect = {0,0,0,0};
+    SDL_Rect tmp_result_rect = {200,0,0,0};
+    int i;
+
+    result_res_init(test_para,&result_res);
+
+    SDL_BlitSurface(background,NULL,screen,NULL);
+    for(i = 0; i<test_para->total_num; i++)
+    {
+	SDL_BlitSurface(result_res.item_string[i],NULL,screen,&tmp_rect);
+	SDL_BlitSurface(result_res.result_string[i],NULL,screen,&tmp_result_rect);
+	tmp_rect.y += 10;
+	tmp_result_rect.y += 10;
+    }
+
+    sdl_flip_screen();
+
+    result_res_deinit(test_para,&result_res);
 }
 //sdl init
 int init_sdl(struct test_Parameters *test_para)

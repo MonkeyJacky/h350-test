@@ -23,17 +23,17 @@ typedef struct{
 
 test_orders_ test_order_array[] =
 {
-    {"lcd",lcd_test},
-    {"keypad",key_test},
-    {"joystick",joystick_test},
-    {"wifi",wifi_test},
-    {"tfcard",tfcard_test},
-    {"bat-voltage",battery_voltage_test},
-    {"internal_card",internal_card_test},
-    {"hdmi",hdmi_test},
-    {"avout",avout_test},
-    {"speaker",speaker_test},
-    {"headphone",hp_test},
+    {"Lcd",lcd_test},
+    {"Keypad",key_test},
+    {"Joystick",joystick_test},
+    {"Wifi",wifi_test},
+    {"Tfcard",tfcard_test},
+    {"Bat-Voltage",battery_voltage_test},
+    {"Internal_Card",internal_card_test},
+    {"Hdmi",hdmi_test},
+    {"Avout",avout_test},
+    {"Speaker",speaker_test},
+    {"Headphone",hp_test},
 };
 
 void test_loop(struct test_Parameters *test_para,int num,int order_array_size)
@@ -45,9 +45,9 @@ void test_loop(struct test_Parameters *test_para,int num,int order_array_size)
 	if(!strcmp(test_para->test_order[num],test_order_array[i].item_key_word))
 	{
 	    debug_print("This is %s test!\n",test_order_array[i].item_key_word);
-	    test_para->result_flag[i] = test_order_array[i].item_testing_func(test_para);
-	    store_result_flag(test_para,i);
-	    debug_print("test_para->result_flag[%d] is %d\n",i,test_para->result_flag[i]);
+	    test_para->result_flag[num] = test_order_array[i].item_testing_func(test_para);
+	    store_result_flag(test_para,num);
+	    debug_print("test_para->result_flag[%d] is %d\n",num,test_para->result_flag[num]);
 	}
     }
 }
@@ -83,6 +83,9 @@ int main(void)
     {
 	debug_print("Get test order num error!\n");
     }
+
+    result_show(&test_para);
+    sleep(5);
 
 #ifdef H350
     deinit_key_pad();

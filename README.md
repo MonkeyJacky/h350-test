@@ -48,6 +48,8 @@ Use for H350 board testing. It can work on H350 board and ubuntu OS now (other O
     * Attempts to connect three times, each call to the ping command to determine whether the connection was successful.
 11. Bat-voltage test:
     * The middle of the screen will display the power value read. 
+12. Select Mode:
+    * There's a list, you can choose the item what you want to test. Using UP and DOWN for moving, A for confirming, B for going on whole test.
 
 
 ## The follow-up function on Continuous Improvement ... ##

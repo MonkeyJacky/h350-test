@@ -17,6 +17,7 @@ struct _result_res{
     SDL_Color Pass_color;
     SDL_Color Untest_color;
     TTF_Font *font;
+    TTF_Font *focus_font;
     SDL_Surface **item_string;
     SDL_Surface **result_string;
 };

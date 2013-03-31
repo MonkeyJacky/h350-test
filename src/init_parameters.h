@@ -81,6 +81,7 @@ struct _screen_info_{
 struct test_Parameters{
     int total_num;
     int test_offset;
+    int select_mode;
     int key_num;
     int joykey_num;
     char** test_order;

@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "sdl_interface.h"
 #include "init_parameters.h"
+#include "sdl_key_def.h"
 
 static SDL_Color Bcolor = {0,0,0};
 
@@ -67,6 +68,7 @@ void deinit_key_pad(void)
 
 unsigned int key_pad_read(void)
 {
+#ifdef H350
     unsigned int keyval,keyval1;
     int ret = 0;
 
@@ -81,6 +83,37 @@ unsigned int key_pad_read(void)
 	return keyval;
     else
 	return 0xffff;
+#else
+    SDLKey key;
+    SDL_Event event;
+    unsigned int keyval = 0;
+    if (SDL_PollEvent(&event))
+    {
+	if(event.type == SDL_KEYDOWN)
+	{
+	    key = event.key.keysym.sym;
+
+	    switch(key)
+	    {
+		case SDL_BUTTON_UP:
+		    keyval = (1 << H350_KEY_UP);
+		    break;
+		case SDL_BUTTON_DOWN:
+		    keyval = (1 << H350_KEY_DOWN);
+		    break;
+		case SDL_BUTTON_B:
+		    keyval = (1 << H350_KEY_B);
+		    break;
+		case SDL_BUTTON_A:
+		    keyval = (1 << H350_KEY_A);
+		    break;
+		default:break;
+	    }
+	}
+    }
+
+    return keyval;
+#endif
 }
 
 void wait_for_next(void)
@@ -145,7 +178,6 @@ int decision_loop(void)
 
     test_words_show("Press A for pass, B for fail",Bcolor);
 
-#ifdef H350
     while(decision_flag)
     {
 	key_read_value = key_pad_read();
@@ -164,7 +196,6 @@ int decision_loop(void)
 
 	usleep(100*1000);
     }
-#endif
 
     return FAIL;
 }
@@ -214,6 +245,56 @@ int press_A_go_on(void)
     }
 
     return FAIL;
+}
+
+int select_test_key_loop(struct test_Parameters *test_para)
+{
+    int loop = 1;
+    unsigned int key_read_value = 0;
+
+    while(loop)
+    {
+	key_read_value = key_pad_read();
+
+	if(key_read_value == (1 << H350_KEY_DOWN))
+	{
+	    test_para->test_offset += 1;
+	    if(test_para->test_offset > test_para->total_num - 1) 
+	    {
+		test_para->test_offset = 0;
+	    }
+	    test_para->select_mode = True;
+	    return True;
+	}
+
+	if(key_read_value == (1 << H350_KEY_UP))
+	{
+	    test_para->test_offset -= 1;
+	    if(test_para->test_offset < 0)
+	    {
+		test_para->test_offset = test_para->total_num - 1;
+	    }
+	    test_para->select_mode = True;
+	    return True;
+	}
+
+	if(key_read_value == (1 << H350_KEY_A))
+	{
+	    loop = 0;
+	    if(test_para->test_offset >= 0)
+		test_para->select_mode = True;
+	    return False;
+	}
+
+	if(key_read_value == (1 << H350_KEY_B))
+	{
+	    loop = 0;
+	    test_para->select_mode = False;
+	    return False;
+	}
+    }
+
+    return False;
 }
 /****************************key test****************************/
 static int key_image_init(void)

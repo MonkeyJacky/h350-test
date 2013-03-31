@@ -67,6 +67,14 @@ int main(void)
     if (init_sdl(&test_para) < 0)
 	exit(0);
 
+    test_para.test_offset = -1;
+    test_para.select_mode = False;
+    while(1)
+    {
+	result_show(&test_para);
+	if( select_test_key_loop(&test_para) == False )
+	    break;
+    }
 #ifdef H350
     init_key_pad();
 #endif
@@ -76,8 +84,15 @@ int main(void)
 #endif
     if(test_para.total_num > 0 && test_para.total_num <= test_order_array_size)
     {
-	for(i = 0; i < test_para.total_num; i++)
-	    test_loop(&test_para,i,test_order_array_size);
+	if(test_para.select_mode == True)
+	{
+	    test_loop(&test_para,test_para.test_offset,test_order_array_size);
+	}
+	else
+	{
+	    for(i = 0; i < test_para.total_num; i++)
+		test_loop(&test_para,i,test_order_array_size);
+	}
     }
     else
     {
@@ -85,8 +100,7 @@ int main(void)
     }
 
     result_show(&test_para);
-    sleep(5);
-
+    press_A_go_on();
 #ifdef H350
     deinit_key_pad();
 #endif

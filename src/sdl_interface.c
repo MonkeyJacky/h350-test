@@ -109,6 +109,9 @@ static void result_res_init(struct test_Parameters *test_para, struct _result_re
 	test_para->result_view_para.untest_color[2];
 
     result_res->font = TTF_OpenFont(FONT_PATH,13);
+    result_res->focus_font = TTF_OpenFont(FONT_PATH,15);
+    TTF_SetFontStyle(result_res->font,0);
+    TTF_SetFontStyle(result_res->focus_font,TTF_STYLE_BOLD);
 
     result_res->result_string =
 	malloc(sizeof(SDL_Surface *) * test_para->total_num);
@@ -119,24 +122,54 @@ static void result_res_init(struct test_Parameters *test_para, struct _result_re
     {
 	if(test_para->result_flag[i] == PASS)
 	{
-	    result_res->item_string[i] =
-		TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Pass_color);
-	    result_res->result_string[i] =
-		TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[1],result_res->Pass_color);
+	    if(test_para->select_mode == True && i == test_para->test_offset)
+	    {
+		result_res->item_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->test_order[i],result_res->Pass_color);
+		result_res->result_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->result_view_para.result_words[1],result_res->Pass_color);
+	    }
+	    else
+	    {
+		result_res->item_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Pass_color);
+		result_res->result_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[1],result_res->Pass_color);
+	    }
 	}
 	else if(test_para->result_flag[i] == FAIL)
 	{
-	    result_res->item_string[i] =
-		TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Fail_color);
-	    result_res->result_string[i] =
-		TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[0],result_res->Fail_color);
+	    if(test_para->select_mode == True && i == test_para->test_offset)
+	    {
+		result_res->item_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->test_order[i],result_res->Fail_color);
+		result_res->result_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->result_view_para.result_words[0],result_res->Fail_color);
+	    }
+	    else
+	    {
+		result_res->item_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Fail_color);
+		result_res->result_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[0],result_res->Fail_color);
+	    }
 	}
 	else if(test_para->result_flag[i] == UNTEST)
 	{
-	    result_res->item_string[i] =
-		TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Untest_color);
-	    result_res->result_string[i] =
-		TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[2],result_res->Untest_color);
+	    if(test_para->select_mode == True && i == test_para->test_offset)
+	    {
+		result_res->item_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->test_order[i],result_res->Untest_color);
+		result_res->result_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->result_view_para.result_words[2],result_res->Untest_color);
+	    }
+	    else
+	    {
+		result_res->item_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Untest_color);
+		result_res->result_string[i] =
+		    TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[2],result_res->Untest_color);
+	    }
 	}
     }
 }
@@ -169,14 +202,15 @@ void result_show(struct test_Parameters *test_para)
     {
 	SDL_BlitSurface(result_res.item_string[i],NULL,screen,&tmp_rect);
 	SDL_BlitSurface(result_res.result_string[i],NULL,screen,&tmp_result_rect);
-	tmp_rect.y += 10;
-	tmp_result_rect.y += 10;
+	tmp_rect.y += 20;
+	tmp_result_rect.y += 20;
     }
 
     sdl_flip_screen();
 
     result_res_deinit(test_para,&result_res);
 }
+
 //sdl init
 int init_sdl(struct test_Parameters *test_para)
 {

@@ -95,16 +95,16 @@ unsigned int key_pad_read(void)
 
 	    switch(key)
 	    {
-		case SDL_BUTTON_UP:
+		case H350_SDL_BUTTON_UP:
 		    keyval = (1 << H350_KEY_UP);
 		    break;
-		case SDL_BUTTON_DOWN:
+		case H350_SDL_BUTTON_DOWN:
 		    keyval = (1 << H350_KEY_DOWN);
 		    break;
-		case SDL_BUTTON_B:
+		case H350_SDL_BUTTON_B:
 		    keyval = (1 << H350_KEY_B);
 		    break;
-		case SDL_BUTTON_A:
+		case H350_SDL_BUTTON_A:
 		    keyval = (1 << H350_KEY_A);
 		    break;
 		default:break;

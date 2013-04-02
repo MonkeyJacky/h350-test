@@ -16,6 +16,7 @@
 #include "sdl_interface.h"
 #include "init_parameters.h"
 #include "moto_test.h"
+#include "usb_test.h"
 
 typedef struct{
     char* item_key_word;
@@ -36,6 +37,7 @@ test_orders_ test_order_array[] =
     {"Speaker",speaker_test},
     {"Headphone",hp_test},
     {"Moto",moto_test},
+    {"Usb",udc_test},
 };
 
 void test_loop(struct test_Parameters *test_para,int num,int order_array_size)

@@ -11,5 +11,6 @@
 #endif
 
 int battery_voltage_test(struct test_Parameters *test_para);
+int get_bat_dev_val(void);
 
 #endif

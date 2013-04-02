@@ -40,6 +40,28 @@ static int get_bat_val(void)
     return (mvolts&0x0000ffff);
 }
 
+int get_bat_dev_val(void)
+{
+    char buf[128] = {0};
+    int mvolts = 0;
+    FILE* bat_fp = NULL;
+
+    bat_fp = fopen(BATTERY_DEVICE,"rb");
+    if(!bat_fp){
+	debug_print("can not open %s\n",BATTERY_DEVICE);
+	return False;
+    }
+
+    rewind(bat_fp);
+    fgets(buf,127,bat_fp);
+    sscanf(buf,"%d",&mvolts);
+
+    if(bat_fp)
+	fclose(bat_fp);
+
+    return mvolts;
+}
+
 int battery_voltage_test(struct test_Parameters *test_para)
 {
     int bat_test_loop = 1;

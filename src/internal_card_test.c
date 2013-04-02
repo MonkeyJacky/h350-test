@@ -8,24 +8,30 @@
 #include "sdl_interface.h"
 #include "debug.h"
 static SDL_Color Bcolor = {0,0,0};
-static FILE* card_fp = NULL;
 static void write_test_file(int write_length)
 {
-	card_fp = fopen(TEST_FILE,"w+");
-	char each_write_length[20];
-	int return_write = 0;
-	int count = 0;
-	sprintf(each_write_length,"justfortest");
+    FILE* card_fp = NULL;
+    card_fp = fopen(TEST_FILE,"w+");
+    char each_write_length[20];
+    int return_write = 0;
+    int count = 0;
+    sprintf(each_write_length,"justfortest");
+    if(!card_fp)
+    {
+	debug_print("open file error!\n");
+	return;
+    }
 
-	rewind(card_fp);
-	do
-	{
-		return_write = fwrite(each_write_length,sizeof(unsigned char),sizeof(unsigned char)*20,card_fp);
-		count++;
-	}while(return_write*count < write_length);
+    rewind(card_fp);
+    do
+    {
+	return_write = fwrite(each_write_length,sizeof(unsigned char),sizeof(unsigned char)*20,card_fp);
+	count++;
+    }while(return_write*count < write_length);
 
-	sync();
-	fclose(card_fp);
+    fflush(card_fp);
+    fsync(fileno(card_fp));
+    fclose(card_fp);
 }
 
 int internal_card_test(struct test_Parameters *test_para)
@@ -54,7 +60,7 @@ int internal_card_test(struct test_Parameters *test_para)
 	debug_print("rm %s error",TEST_FILE);
     }else{
 #ifdef H350
-	sync();
+	/*sync();*/
 #endif
     }
 

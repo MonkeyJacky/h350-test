@@ -68,7 +68,9 @@ int main(void)
 
     if (init_sdl(&test_para) < 0)
 	exit(0);
-
+#ifdef H350
+    init_key_pad();
+#endif
     test_para.test_offset = -1;
     test_para.select_mode = False;
     while(1)
@@ -77,9 +79,7 @@ int main(void)
 	if( select_test_key_loop(&test_para) == False )
 	    break;
     }
-#ifdef H350
-    init_key_pad();
-#endif
+
     test_order_array_size = sizeof(test_order_array) / sizeof(test_orders_);
 #ifdef H350
     flush_screen(1);

@@ -172,7 +172,7 @@ int speaker_test(struct test_Parameters *test_para)
     if(audio_init() < 0)
 	return False;
 
-    set_volume(50);
+    set_volume(100);
 #endif
     test_words_show("Speaker sound test",Bcolor);
     test_words_show("Play now....",Bcolor);
@@ -198,7 +198,7 @@ int hp_test(struct test_Parameters *test_para)
     if(audio_init() < 0 || init_headphone() < 0)
 	return False;
 
-    set_volume(50);
+    set_volume(70);
 #endif
     test_words_show("Headphone sound test",Bcolor);
     test_words_show("Please insert the headphone...",Bcolor);

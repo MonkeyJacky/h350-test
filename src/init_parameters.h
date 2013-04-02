@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#define CONFIG_FILE "test.conf"
+#define CONFIG_FILE "res/test.conf"
 #define False (-1)
 #define True 0
 #define CONTINUE 1
@@ -37,7 +37,7 @@
 #define PASS 0
 #define UNTEST 2
 //*********************************************************
-#define RESULT_CONFIG_FILE "result_file.conf"
+#define RESULT_CONFIG_FILE "res/result_file.conf"
 #define JOYSTICK_RESULT "joystick_result"
 #define KEYPAD_RESULT "keypad_result"
 #define HEADPHONE_RESULT "headphone_result"

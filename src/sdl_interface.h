@@ -6,11 +6,7 @@
 #include <SDL_ttf.h>
 #include "init_parameters.h"
 
-#ifdef H350
-#define FONT_PATH "/usr/share/font/l009.ttf"
-#else
 #define FONT_PATH "res/l009.ttf"
-#endif
 
 struct _result_res{
     SDL_Color Fail_color;

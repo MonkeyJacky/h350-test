@@ -77,8 +77,7 @@ static int set_lcd_control_mode(int mode)
 	    memset(temp_command,0,MAX_SIZE);
 	    sprintf(temp_command,"echo 1 > %s",HDMI_IC_DEV);
 	    ret = system(temp_command);
-	    /*while(i--)*/
-		/*usleep(100*1000);*/
+	    sleep(2);
 	}
 
 	return True;

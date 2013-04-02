@@ -69,7 +69,7 @@ void deinit_key_pad(void)
 unsigned int key_pad_read(void)
 {
 #ifdef H350
-    unsigned int keyval,keyval1;
+    unsigned int keyval = 0,keyval1 = 0;
     int ret = 0;
 
     ret |= read(key_pad, &keyval, 4);
@@ -124,7 +124,6 @@ void wait_for_next(void)
     while(key_read_value == 0)
     {
         key_read_value = key_pad_read();
-        usleep(10*1000);
         key_read_value1 = key_pad_read();
         if(key_read_value == key_read_value1)
         {
@@ -138,7 +137,6 @@ void wait_for_next(void)
     while(key_read_value != 0)
     {
         key_read_value = key_pad_read();
-        usleep(10*1000);
         key_read_value1 = key_pad_read();
         if(key_read_value == key_read_value1)
         {
@@ -193,8 +191,6 @@ int decision_loop(void)
 	    return FAIL;
 	}
 	else;
-
-	usleep(100*1000);
     }
 
     return FAIL;
@@ -220,8 +216,6 @@ int press_B_to_quit(void)
 	    return FAIL;
 	}
 	else;
-
-	usleep(100*1000);
     }
 
     return FAIL;
@@ -240,8 +234,6 @@ int press_A_go_on(void)
 	{
 	    return PASS;
 	}
-
-	usleep(100*1000);
     }
 
     return FAIL;
@@ -296,6 +288,17 @@ int select_test_key_loop(struct test_Parameters *test_para)
 
     return False;
 }
+unsigned int direction_keys[]=
+{
+    (1 << H350_KEY_UP),
+    (1 << H350_KEY_DOWN),
+    (1 << H350_KEY_LEFT),
+    (1 << H350_KEY_RIGHT),
+    ((1 << H350_KEY_UP) | (1 << H350_KEY_LEFT)),
+    ((1 << H350_KEY_DOWN) | (1 << H350_KEY_LEFT)),
+    ((1 << H350_KEY_UP) | (1 << H350_KEY_RIGHT)),
+    ((1 << H350_KEY_DOWN) | (1 << H350_KEY_RIGHT)),
+};
 /****************************key test****************************/
 static int key_image_init(void)
 {
@@ -349,10 +352,10 @@ static void draw_key_view(struct key_test_para *para)
 
     sdl_draw_a_pic(background,NULL,NULL);
     sdl_set_pen(&Bcolor, 1);
-    for(i=0; i < para->key_num; i++)
-    {
+    /*for(i=0; i < para->key_num; i++)*/
+    /*{*/
 	/*debug_print("x is %d, y is %d, w is %d, h is %d\n",para->key_rect[i].x,para->key_rect[i].y,para->key_rect[i].w,para->key_rect[i].h);*/
-    }
+    /*}*/
 
     for(i=0; i < para->key_num; i++)
     {
@@ -384,31 +387,15 @@ static int process_key_down(int offset, struct key_test_para *para)
 static int process_key(unsigned int keyval, struct key_test_para *para)
 {
     int ret = 1;
+    int i = 0;
 
-    if(keyval == para->key_value[H350_KEY_UP])
-	ret = process_key_down(H350_KEY_UP,para);
-    if(keyval == para->key_value[H350_KEY_DOWN])
-	ret = process_key_down(H350_KEY_DOWN,para);
-    if(keyval == para->key_value[H350_KEY_LEFT])
-	ret = process_key_down(H350_KEY_LEFT,para);
-    if(keyval == para->key_value[H350_KEY_RIGHT])
-	ret = process_key_down(H350_KEY_RIGHT,para);
-    if(keyval == para->key_value[H350_KEY_A])
-	ret = process_key_down(H350_KEY_A,para);
-    if(keyval == para->key_value[H350_KEY_B])
-	ret = process_key_down(H350_KEY_B,para);
-    if(keyval == para->key_value[H350_KEY_Y])
-	ret = process_key_down(H350_KEY_Y,para);
-    if(keyval == para->key_value[H350_KEY_X])
-	ret = process_key_down(H350_KEY_X,para);
-    if(keyval == para->key_value[H350_KEY_L])
-	ret = process_key_down(H350_KEY_L,para);
-    if(keyval == para->key_value[H350_KEY_R])
-	ret = process_key_down(H350_KEY_R,para);
-    if(keyval == para->key_value[H350_KEY_START])
-	ret = process_key_down(H350_KEY_START,para);
-    if(keyval == para->key_value[H350_KEY_SELECT])
-	ret = process_key_down(H350_KEY_SELECT,para);
+    for(i = 0; i < para->key_num; i++)
+    {
+	if(keyval == para->key_value[i])
+	{
+	    ret = process_key_down(i,para);
+	}
+    }
 
     return ret;
 }
@@ -431,8 +418,9 @@ int key_test(struct test_Parameters *test_para)
 
 	if(!process_key(key_read_value,&key_para))
 	    break;
-	usleep(150*1000);
     }
+#else
+    sleep(2);
 #endif
 
     deinit_flag_res(&key_para);
@@ -442,46 +430,6 @@ int key_test(struct test_Parameters *test_para)
     return True;
 }
 //***************************joystick test****************
-
-static int process_joystick_key(unsigned int keyval,struct key_test_para *para)
-{
-    int ret = 1;
-    if(keyval == para->key_value[H350_JOYKEY_UP])
-    {
-	ret = process_key_down(H350_JOYKEY_UP,para);
-    }
-    if(keyval == para->key_value[H350_JOYKEY_DOWN])
-    {
-	ret = process_key_down(H350_JOYKEY_DOWN,para);
-    }
-    if(keyval == para->key_value[H350_JOYKEY_LEFT])
-    {
-	ret = process_key_down(H350_JOYKEY_LEFT,para);
-    }
-    if(keyval == para->key_value[H350_JOYKEY_RIGHT])
-    {
-	ret = process_key_down(H350_JOYKEY_RIGHT,para);
-    }
-    if(keyval == (para->key_value[H350_JOYKEY_UP] | para->key_value[H350_JOYKEY_LEFT]))
-    {
-	ret = process_key_down(H350_JOYKEY_TOP_LEFT,para);
-    }
-    if(keyval == (para->key_value[H350_JOYKEY_UP] | para->key_value[H350_JOYKEY_RIGHT]))
-    {
-	ret = process_key_down(H350_JOYKEY_TOP_RIGHT,para);
-    }
-    if(keyval == (para->key_value[H350_JOYKEY_DOWN] | para->key_value[H350_JOYKEY_RIGHT]))
-    {
-	ret = process_key_down(H350_JOYKEY_BOTTOM_RIGHT,para);
-    }
-    if(keyval == (para->key_value[H350_JOYKEY_DOWN] | para->key_value[H350_JOYKEY_LEFT]))
-    {
-	ret = process_key_down(H350_JOYKEY_BOTTOM_LEFT,para);
-    }
-
-    return ret;
-}
-
 int joystick_test(struct test_Parameters *test_para)
 {
     int key_loop = 1;
@@ -498,10 +446,40 @@ int joystick_test(struct test_Parameters *test_para)
     {
 	key_read_value = key_pad_read();
 
-	if(!process_joystick_key(key_read_value,&key_para))
+	if(!process_key(key_read_value,&key_para))
 	    break;
-	usleep(150*1000);
     }
+#else
+    sleep(2);
+#endif
+
+    deinit_flag_res(&key_para);
+    key_image_deinit();
+    draw_decision_pic(PASS);
+
+    return True;
+}
+
+//*********************gsensor test interface*****************
+int gsensor_test_loop(struct test_Parameters *test_para)
+{
+    int gsensor_loop = 1;
+    unsigned int key_read_value = 0;
+    struct key_test_para key_para;
+
+    init_flag(&key_para, test_para->gsensor_rect_array, test_para->gsensor_direction_num);
+    key_image_init();
+    draw_key_view(&key_para);
+#ifdef H350
+    while(gsensor_loop)
+    {
+	key_read_value = key_pad_read();
+
+	if(!process_key(key_read_value,&key_para))
+	    break;
+    }
+#else
+    sleep(2);
 #endif
 
     deinit_flag_res(&key_para);

@@ -14,5 +14,6 @@ int decision_loop(void);
 void deinit_key_pad(void);
 int press_A_go_on(void);
 int select_test_key_loop(struct test_Parameters *test_para);
+int gsensor_test_loop(struct test_Parameters *test_para);
 
 #endif

@@ -95,6 +95,18 @@ int init_res(struct test_Parameters *test_para)
     test_para->joykey_rect_array.w = malloc(sizeof(int) * test_para->joykey_num);
     test_para->joykey_rect_array.h = malloc(sizeof(int) * test_para->joykey_num);
 
+    test_para->gsensor_direction_num = cfg_get_key_value_to_int(test_cf,GSENSOR_DIRECTION_NUM);
+    debug_print("test_para->gsensor_direction_num is %d\n",test_para->gsensor_direction_num);
+    if(test_para->gsensor_direction_num < 0)
+    {
+	debug_print("get gsensor_direction_num error!\n");
+	return False;
+    }
+    test_para->gsensor_rect_array.x = malloc(sizeof(int) * test_para->gsensor_direction_num);
+    test_para->gsensor_rect_array.y = malloc(sizeof(int) * test_para->gsensor_direction_num);
+    test_para->gsensor_rect_array.w = malloc(sizeof(int) * test_para->gsensor_direction_num);
+    test_para->gsensor_rect_array.h = malloc(sizeof(int) * test_para->gsensor_direction_num);
+
     for(i = 0; i < test_para->total_num; i++)
     {
 	test_para->test_order[i] = malloc(sizeof(char) * MAX_SIZE);
@@ -118,6 +130,14 @@ int init_res(struct test_Parameters *test_para)
     if(get_array_from_conf_int(test_para->joykey_rect_array.w,test_para->joykey_num,JOYRECT_ARRAY_W,test_cf) < 0)
 	return False;
     if(get_array_from_conf_int(test_para->joykey_rect_array.h,test_para->joykey_num,JOYRECT_ARRAY_H,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->gsensor_rect_array.x,test_para->gsensor_direction_num,GSENSOR_RECT_X,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->gsensor_rect_array.y,test_para->gsensor_direction_num,GSENSOR_RECT_Y,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->gsensor_rect_array.w,test_para->gsensor_direction_num,GSENSOR_RECT_W,test_cf) < 0)
+	return False;
+    if(get_array_from_conf_int(test_para->gsensor_rect_array.h,test_para->gsensor_direction_num,GSENSOR_RECT_H,test_cf) < 0)
 	return False;
 
     for(i = 0; i < test_para->total_num; i++)
@@ -211,12 +231,15 @@ void deinit_res(struct test_Parameters *test_para)
     int i;
 
     for(i = 0; i<test_para->total_num; i++)
-    {
 	deep_free(test_para->test_order[i]);
-    }
     deep_free(test_para->test_order);
-    deep_free(test_para->result_flag);
 
+    //TODO there is a free error.
+    /*for(i = 0; i<test_para->result_view_para.array_size; i++)*/
+	/*deep_free(test_para->result_view_para.result_words[i]);*/
+    /*deep_free(test_para->result_view_para.result_words);*/
+
+    deep_free(test_para->result_flag);
     deep_free(test_para->key_rect_array.x);
     deep_free(test_para->key_rect_array.y);
     deep_free(test_para->key_rect_array.w);
@@ -225,6 +248,13 @@ void deinit_res(struct test_Parameters *test_para)
     deep_free(test_para->joykey_rect_array.y);
     deep_free(test_para->joykey_rect_array.w);
     deep_free(test_para->joykey_rect_array.h);
+    deep_free(test_para->gsensor_rect_array.x);
+    deep_free(test_para->gsensor_rect_array.y);
+    deep_free(test_para->gsensor_rect_array.w);
+    deep_free(test_para->gsensor_rect_array.h);
+    deep_free(test_para->result_view_para.fail_color);
+    deep_free(test_para->result_view_para.pass_color);
+    deep_free(test_para->result_view_para.untest_color);
 
     cfg_free_config_file_struct(&test_cf);
 }

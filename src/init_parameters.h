@@ -20,6 +20,11 @@
 #define JOYRECT_ARRAY_Y "joykey_rect_y"
 #define JOYRECT_ARRAY_W "joykey_rect_w"
 #define JOYRECT_ARRAY_H "joykey_rect_h"
+#define GSENSOR_DIRECTION_NUM "gsensor_direction_num"
+#define GSENSOR_RECT_X "gsensor_rect_x"
+#define GSENSOR_RECT_Y "gsensor_rect_y"
+#define GSENSOR_RECT_W "gsensor_rect_w"
+#define GSENSOR_RECT_H "gsensor_rect_h"
 #define SCREEN_WIDTH "screen_width"
 #define SCREEN_HEIGHT "screen_height"
 #define SCREEN_BITS_PER_PIXEL "screen_bits_per_pixel"
@@ -84,10 +89,12 @@ struct test_Parameters{
     int select_mode;
     int key_num;
     int joykey_num;
+    int gsensor_direction_num;
     char** test_order;
     int* result_flag;
     struct key_rect_para key_rect_array;
     struct key_rect_para joykey_rect_array;
+    struct key_rect_para gsensor_rect_array;
     struct _screen_info_ screen_info;
     struct _screen_info_ hdmi_info;
     struct _result_view_para result_view_para;

@@ -120,11 +120,11 @@ int hdmi_test(struct test_Parameters *test_para)
 {
     test_words_show("HDMI test",Bcolor);
 
-    if(init_tvout_pic() < 0)
-    {
-	draw_decision_pic(FAIL);
-	return False;
-    }
+    /*if(init_tvout_pic() < 0)*/
+    /*{*/
+	/*draw_decision_pic(FAIL);*/
+	/*return False;*/
+    /*}*/
 
     if(init_fb(test_para->hdmi_info.buffer_size) < 0)
     {
@@ -139,7 +139,7 @@ int hdmi_test(struct test_Parameters *test_para)
     }
 
     deinit_fb(test_para->hdmi_info.buffer_size);
-    deinit_tvout_pic();
+    /*deinit_tvout_pic();*/
     return decision_loop();
 }
 
@@ -182,14 +182,36 @@ static int get_av_out_mode()
     return avout_mode;
 }
 
+static void open_avout_mode(void)
+{
+    char tmp_command[MAX_SIZE] = {0};
+    sprintf(tmp_command,"echo 1 > %s",AVOUT_SWITCH_DEV);
+    system(tmp_command);
+    sleep(2);
+}
+
+static void shut_down_avout(void)
+{
+    char tmp_command[MAX_SIZE] = {0};
+    sprintf(tmp_command,"echo 0 > %s",AVOUT_SWITCH_DEV);
+    system(tmp_command);
+}
+
 int avout_test(struct test_Parameters *test_para)
 {
     int avout_loop = 1;
+    extern unsigned char *fb;
+    int i = 0;
 
     test_words_show("Av out test",Bcolor);
 
 #ifdef H350
-    if(init_tvout_pic() < 0)
+    /*if(init_tvout_pic() < 0)*/
+    /*{*/
+	/*draw_decision_pic(FAIL);*/
+	/*return False;*/
+    /*}*/
+    if(init_fb(test_para->avout_info.buffer_size) < 0)
     {
 	draw_decision_pic(FAIL);
 	return False;
@@ -205,22 +227,32 @@ int avout_test(struct test_Parameters *test_para)
     {
 	if(get_av_out_mode() == 1)
 	{
-	    sdl_draw_a_pic(test_back_show,NULL,NULL);
-	    sdl_flip_screen();
-	    sleep(3);
+	    open_avout_mode();
+	    for(i = 0; i < 3; i++)
+	    {
+		draw_color_bar((unsigned int *)fb,i,test_para->avout_info.width,test_para->avout_info.height);
+		sleep(2);
+	    }
+	    /*sdl_draw_a_pic(test_back_show,NULL,NULL);*/
+	    /*sdl_flip_screen();*/
+	    shut_down_avout();
+	    avout_loop = 0;
 	}
 
-	if(press_B_to_quit() < 0)
-	{
-	    draw_decision_pic(FAIL);
-	    return False;
-	}
+	/*if(press_B_to_quit() < 0)*/
+	/*{*/
+	    /*deinit_av_dev();*/
+	    /*deinit_tvout_pic();*/
+	    /*draw_decision_pic(FAIL);*/
+	    /*return False;*/
+	/*}*/
 
 	usleep(200*1000);
     }
 
     deinit_av_dev();
-    deinit_tvout_pic();
+    deinit_fb(test_para->avout_info.buffer_size);
+    /*deinit_tvout_pic();*/
 #endif
 
     return decision_loop();

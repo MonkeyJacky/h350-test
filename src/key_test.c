@@ -288,6 +288,23 @@ int select_test_key_loop(struct test_Parameters *test_para)
 
     return False;
 }
+
+unsigned int keypad_keys[]=
+{
+    (1 << H350_KEY_UP),
+    (1 << H350_KEY_DOWN),
+    (1 << H350_KEY_LEFT),
+    (1 << H350_KEY_RIGHT),
+    (1 << H350_KEY_A),
+    (1 << H350_KEY_B),
+    (1 << H350_KEY_Y),
+    (1 << H350_KEY_X),
+    (1 << H350_KEY_L),
+    (1 << H350_KEY_R),
+    (1 << H350_KEY_START),
+    (1 << H350_KEY_SELECT),
+};
+
 unsigned int direction_keys[]=
 {
     (1 << H350_KEY_UP),
@@ -312,7 +329,7 @@ static void key_image_deinit(void)
     sdl_free_surface(background);
 }
 
-static void init_flag(struct key_test_para *para, const struct key_rect_para key_offset_array,int test_key_num)
+static void init_flag(struct key_test_para *para, const struct key_rect_para key_offset_array,int test_key_num,unsigned int *keys_value)
 {
     int i;
 
@@ -336,7 +353,7 @@ static void init_flag(struct key_test_para *para, const struct key_rect_para key
     }
 
     for(i=0; i < para->key_num; i++)
-	para->key_value[i] = 1 << i;
+	para->key_value[i] = keys_value[i];
 }
 
 static void deinit_flag_res(struct key_test_para *para)
@@ -405,7 +422,7 @@ int key_test(struct test_Parameters *test_para)
     int key_loop = 1;
     int key_read_value = 0;
     struct key_test_para key_para;
-    init_flag(&key_para, test_para->key_rect_array, test_para->key_num);
+    init_flag(&key_para, test_para->key_rect_array, test_para->key_num, keypad_keys);
     test_words_show("Keypad test!",Bcolor);
     key_release_warning();
     key_image_init();
@@ -435,7 +452,7 @@ int joystick_test(struct test_Parameters *test_para)
     int key_loop = 1;
     int key_read_value = 0;
     struct key_test_para key_para;
-    init_flag(&key_para, test_para->joykey_rect_array, test_para->joykey_num);
+    init_flag(&key_para, test_para->joykey_rect_array, test_para->joykey_num, direction_keys);
 
     key_image_init();
     test_words_show("Joystick test",Bcolor);
@@ -467,7 +484,7 @@ int gsensor_test_loop(struct test_Parameters *test_para)
     unsigned int key_read_value = 0;
     struct key_test_para key_para;
 
-    init_flag(&key_para, test_para->gsensor_rect_array, test_para->gsensor_direction_num);
+    init_flag(&key_para, test_para->gsensor_rect_array, test_para->gsensor_direction_num, direction_keys);
     key_image_init();
     draw_key_view(&key_para);
 #ifdef H350

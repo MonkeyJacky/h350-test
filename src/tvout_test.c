@@ -178,6 +178,7 @@ static int get_av_out_mode()
 	sscanf(buf, "%d", &avout_mode);
     }
 
+    PRINT_VALUE(avout_mode,%d);
     return avout_mode;
 }
 
@@ -205,6 +206,7 @@ int avout_test(struct test_Parameters *test_para)
 	if(get_av_out_mode() == 1)
 	{
 	    sdl_draw_a_pic(test_back_show,NULL,NULL);
+	    sdl_flip_screen();
 	    sleep(3);
 	}
 

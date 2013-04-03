@@ -26,7 +26,7 @@ int moto_test(struct test_Parameters *test_para)
     test_words_show("Moto vibration test",Bcolor);
 #ifdef H350
     vibration();
-    sleep(3);
+    sleep(2);
     stop_vibration();
 #endif
     return decision_loop();

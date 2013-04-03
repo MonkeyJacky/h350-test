@@ -7,6 +7,7 @@
 #include "init_parameters.h"
 
 #define FONT_PATH "res/l009.ttf"
+#define PAGE_MAX_ITEM 11
 
 struct _result_res{
     SDL_Color Fail_color;

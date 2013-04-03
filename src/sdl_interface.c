@@ -14,6 +14,7 @@ static SDL_Surface *background = NULL;
 static SDL_Surface *pass_view = NULL;
 static SDL_Surface *fail_view = NULL;
 static TTF_Font *font;
+static int item_remainder = 0;
 
 void sdl_flip_screen(void)
 {
@@ -85,7 +86,8 @@ void deinit_sdl(void)
 
 static void result_res_init(struct test_Parameters *test_para, struct _result_res *result_res)
 {
-    int i;
+    int i = 0;
+    item_remainder = 0;
 
     result_res->Fail_color.r =
 	test_para->result_view_para.fail_color[0];
@@ -118,56 +120,61 @@ static void result_res_init(struct test_Parameters *test_para, struct _result_re
     result_res->item_string =
 	malloc(sizeof(SDL_Surface *) * test_para->total_num);
 
-    for(i = 0; i < test_para->total_num; i++)
+    if (test_para->test_offset > PAGE_MAX_ITEM - 1)
     {
-	if(test_para->result_flag[i] == PASS)
+	item_remainder = test_para->test_offset - PAGE_MAX_ITEM + 1;
+    }
+
+    for(i = 0; i < PAGE_MAX_ITEM; i++)
+    {
+	if(test_para->result_flag[i + item_remainder] == PASS)
 	{
-	    if(test_para->select_mode == True && i == test_para->test_offset)
+	    if(test_para->select_mode == True && (i + item_remainder) == test_para->test_offset)
 	    {
-		result_res->item_string[i] =
-		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->test_order[i],result_res->Pass_color);
-		result_res->result_string[i] =
+		result_res->item_string[i + item_remainder] =
+		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->test_order[i + item_remainder],result_res->Pass_color);
+		result_res->result_string[i + item_remainder] =
 		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->result_view_para.result_words[1],result_res->Pass_color);
 	    }
 	    else
 	    {
-		result_res->item_string[i] =
-		    TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Pass_color);
-		result_res->result_string[i] =
+		result_res->item_string[i + item_remainder] =
+		    TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i + item_remainder],result_res->Pass_color);
+		result_res->result_string[i + item_remainder] =
 		    TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[1],result_res->Pass_color);
 	    }
 	}
-	else if(test_para->result_flag[i] == FAIL)
+	else if(test_para->result_flag[i + item_remainder] == FAIL)
 	{
-	    if(test_para->select_mode == True && i == test_para->test_offset)
+	    if(test_para->select_mode == True && (i + item_remainder) == test_para->test_offset)
 	    {
-		result_res->item_string[i] =
-		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->test_order[i],result_res->Fail_color);
-		result_res->result_string[i] =
+		result_res->item_string[i + item_remainder] =
+		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->test_order[i + item_remainder],result_res->Fail_color);
+		result_res->result_string[i + item_remainder] =
 		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->result_view_para.result_words[0],result_res->Fail_color);
 	    }
 	    else
 	    {
-		result_res->item_string[i] =
-		    TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Fail_color);
-		result_res->result_string[i] =
+		result_res->item_string[i + item_remainder] =
+		    TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i + item_remainder],result_res->Fail_color);
+		result_res->result_string[i + item_remainder] =
 		    TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[0],result_res->Fail_color);
 	    }
 	}
-	else if(test_para->result_flag[i] == UNTEST)
+	else if(test_para->result_flag[i + item_remainder] == UNTEST)
 	{
-	    if(test_para->select_mode == True && i == test_para->test_offset)
+	    if(test_para->select_mode == True && (i + item_remainder) == test_para->test_offset)
 	    {
-		result_res->item_string[i] =
-		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->test_order[i],result_res->Untest_color);
-		result_res->result_string[i] =
+		result_res->item_string[i + item_remainder] =
+		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->test_order[i + item_remainder],result_res->Untest_color);
+		result_res->result_string[i + item_remainder] =
 		    TTF_RenderUTF8_Blended(result_res->focus_font,test_para->result_view_para.result_words[2],result_res->Untest_color);
 	    }
 	    else
 	    {
-		result_res->item_string[i] =
-		    TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i],result_res->Untest_color);
-		result_res->result_string[i] =
+		result_res->item_string[i + item_remainder] =
+		    TTF_RenderUTF8_Blended(result_res->font,test_para->test_order[i + item_remainder],result_res->Untest_color);
+		result_res->result_string[i + item_remainder] =
 		    TTF_RenderUTF8_Blended(result_res->font,test_para->result_view_para.result_words[2],result_res->Untest_color);
 	    }
 	}
@@ -178,10 +185,10 @@ static void result_res_deinit(struct test_Parameters *test_para, struct _result_
 {
     int i;
 
-    for(i = 0; i < test_para->total_num; i++)
+    for(i = 0; i < PAGE_MAX_ITEM; i++)
     {
-	sdl_free_surface(result_res->item_string[i]);
-	sdl_free_surface(result_res->result_string[i]);
+	sdl_free_surface(result_res->item_string[i + item_remainder]);
+	sdl_free_surface(result_res->result_string[i + item_remainder]);
     }
 
     deep_free(result_res->item_string);
@@ -198,10 +205,10 @@ void result_show(struct test_Parameters *test_para)
     result_res_init(test_para,&result_res);
 
     SDL_BlitSurface(background,NULL,screen,NULL);
-    for(i = 0; i<test_para->total_num; i++)
+    for(i = 0; i< PAGE_MAX_ITEM; i++)
     {
-	SDL_BlitSurface(result_res.item_string[i],NULL,screen,&tmp_rect);
-	SDL_BlitSurface(result_res.result_string[i],NULL,screen,&tmp_result_rect);
+	SDL_BlitSurface(result_res.item_string[i + item_remainder],NULL,screen,&tmp_rect);
+	SDL_BlitSurface(result_res.result_string[i + item_remainder],NULL,screen,&tmp_result_rect);
 	tmp_rect.y += 20;
 	tmp_result_rect.y += 20;
     }

@@ -129,7 +129,7 @@ int hdmi_test(struct test_Parameters *test_para)
 	/*draw_decision_pic(FAIL);*/
 	/*return False;*/
     /*}*/
-
+#ifdef H350
     if(init_fb(test_para->hdmi_info.buffer_size) < 0)
     {
 	draw_decision_pic(FAIL);
@@ -143,6 +143,7 @@ int hdmi_test(struct test_Parameters *test_para)
     }
 
     deinit_fb(test_para->hdmi_info.buffer_size);
+#endif
     /*deinit_tvout_pic();*/
     return decision_loop();
 }

@@ -112,7 +112,7 @@ static int connection_loop(struct Wifi_parameters *wifi_para)
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"%s -Dwext -i%s -c %s -dd &",wifi_para->wpa_supplicant,wifi_para->network_card,wifi_para->conf);
     ret = system(temp_command);
-    sleep(5);
+    sleep(8);
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"ifconfig %s %s",wifi_para->network_card,wifi_para->client_ip);

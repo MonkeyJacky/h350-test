@@ -35,7 +35,7 @@ static int get_hdmi_mode(void)
     test_words_show("Plug in HDMI cable, then press A go on",Bcolor);
 
     if(press_A_go_on() == PASS)
-	hdmi_set = 1;
+	hdmi_set = SET_ON;
 
     return hdmi_set;
 }
@@ -47,7 +47,7 @@ static int set_lcd_control_mode(int mode)
     char temp_command[MAX_SIZE] = {0};
 
     debug_print("mode is %d\n",mode);
-    if(mode == PANEL_MODE_LCD)
+    if(mode == LCD_MODE)
     {
 	sprintf(temp_command,"echo 0 > %s",HDMI_PROC_DEV);
 	ret = system(temp_command);
@@ -72,14 +72,6 @@ static int set_lcd_control_mode(int mode)
 	    fb = -1;
 	}
 
-	if(mode != PANEL_MODE_LCD)
-	{
-	    memset(temp_command,0,MAX_SIZE);
-	    sprintf(temp_command,"echo 1 > %s",HDMI_IC_DEV);
-	    ret = system(temp_command);
-	    sleep(2);
-	}
-
 	return True;
     }
 
@@ -93,16 +85,26 @@ static int set_lcd_control_mode(int mode)
     return True;
 }
 
+void hdmi_switch(int mode)
+{
+    char tmp_command[MAX_SIZE] = {0};
+    sprintf(tmp_command,"echo %d > %s",mode,HDMI_IC_DEV);
+    system(tmp_command);
+    sleep(2);
+}
+
 static int test_hdmi_loop(struct test_Parameters *test_para)
 {
     int i;
 
     extern unsigned char *fb;
 
-    if(get_hdmi_mode() == HDMI_SET_ON)
+    if(get_hdmi_mode() == SET_ON)
     {
-	if(False == set_lcd_control_mode(DEFAULT_HDMI_MODE))
+	if(False == set_lcd_control_mode(HDMI_MODE))
 	    return False;
+
+	hdmi_switch(SET_ON);
 
 	for(i = 0; i < 3; i++) // 3 kind of colors.
 	{
@@ -110,7 +112,9 @@ static int test_hdmi_loop(struct test_Parameters *test_para)
 	    sleep(2);
 	}
 
-	set_lcd_control_mode(PANEL_MODE_LCD);
+	set_lcd_control_mode(LCD_MODE);
+
+	hdmi_switch(SET_OFF);
     }
 
     return True;
@@ -182,18 +186,10 @@ static int get_av_out_mode()
     return avout_mode;
 }
 
-static void open_avout_mode(void)
+static void avout_switch(int mode)
 {
     char tmp_command[MAX_SIZE] = {0};
-    sprintf(tmp_command,"echo 1 > %s",AVOUT_SWITCH_DEV);
-    system(tmp_command);
-    sleep(2);
-}
-
-static void shut_down_avout(void)
-{
-    char tmp_command[MAX_SIZE] = {0};
-    sprintf(tmp_command,"echo 0 > %s",AVOUT_SWITCH_DEV);
+    sprintf(tmp_command,"echo %d > %s",mode,AVOUT_SWITCH_DEV);
     system(tmp_command);
 }
 
@@ -225,9 +221,13 @@ int avout_test(struct test_Parameters *test_para)
 
     while(avout_loop)
     {
-	if(get_av_out_mode() == 1)
+	if(get_av_out_mode() == SET_ON)
 	{
-	    open_avout_mode();
+	    if(False == set_lcd_control_mode(AVOUT_PAL_MODE))
+		return False;
+
+	    avout_switch(SET_ON);
+
 	    for(i = 0; i < 3; i++)
 	    {
 		draw_color_bar((unsigned int *)fb,i,test_para->avout_info.width,test_para->avout_info.height);
@@ -235,7 +235,9 @@ int avout_test(struct test_Parameters *test_para)
 	    }
 	    /*sdl_draw_a_pic(test_back_show,NULL,NULL);*/
 	    /*sdl_flip_screen();*/
-	    shut_down_avout();
+	    set_lcd_control_mode(LCD_MODE);
+
+	    avout_switch(SET_OFF);
 	    avout_loop = 0;
 	}
 

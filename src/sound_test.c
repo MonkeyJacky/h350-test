@@ -231,6 +231,7 @@ int hp_test(struct test_Parameters *test_para)
     }
 
     deinit_headphone();
+    deinit_audio();
 #endif
     return hp_test_flag;
 }

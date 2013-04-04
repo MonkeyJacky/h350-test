@@ -59,16 +59,16 @@ static int init_wifi_driver(struct Wifi_parameters *wifi_para)
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"insmod %s",wifi_para->driver_dir);
     ret |= system(temp_command);
-    sleep(5);
+    sleep(8);
     if(ret < 0)
 	return False;
 
-    /*memset(temp_command,0,MAX_SIZE);*/
-    /*sprintf(temp_command,"ifconfig %s up",wifi_para->network_card);*/
-    /*ret |= system(temp_command);*/
-    /*sleep(1);*/
-    /*if(ret < 0)*/
-	/*return False;*/
+    memset(temp_command,0,MAX_SIZE);
+    sprintf(temp_command,"ifconfig %s up",wifi_para->network_card);
+    ret |= system(temp_command);
+    sleep(5);
+    if(ret < 0)
+    return False;
 
     return True;
 }
@@ -112,12 +112,12 @@ static int connection_loop(struct Wifi_parameters *wifi_para)
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"%s -Dwext -i%s -c %s -dd &",wifi_para->wpa_supplicant,wifi_para->network_card,wifi_para->conf);
     ret = system(temp_command);
-    sleep(8);
+    sleep(20);
 
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"ifconfig %s %s",wifi_para->network_card,wifi_para->client_ip);
     ret = system(temp_command);
-    sleep(1);
+    sleep(5);
 
     test_words_show("Try to connect...",Bcolor);
     int count = 0;

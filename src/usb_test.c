@@ -55,13 +55,15 @@ int udc_test(struct test_Parameters *test_para)
     test_words_show("Usb test",Bcolor);
 #ifdef H350
     while(udc_loop){
-	sleep(3);
+	sleep(1);
 	udc_state = get_udc_state();
 	if (udc_state == USB)
 	{
-	    test_words_show("Detected usb insert",Bcolor);
+	    if(!usb_detected)
+		test_words_show("Detected usb insert",Bcolor);
 	    sleep(1);
-	    test_words_show("Please unpluging the usb cable",Bcolor);
+	    if(!usb_detected)
+		test_words_show("Please unpluging the usb cable",Bcolor);
 	    usb_detected = 1;
 	}
 	else if (udc_state == OFFLINE)
@@ -72,10 +74,7 @@ int udc_test(struct test_Parameters *test_para)
 		return True;
 	    }
 	}
-	else
-	{
-	    udc_loop = 0;
-	}
+	else;
     }
 #endif
     //Umount usb device.

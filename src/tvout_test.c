@@ -224,8 +224,8 @@ int avout_test(struct test_Parameters *test_para)
     {
 	if(get_av_out_mode() == SET_ON)
 	{
-	    if(False == set_lcd_control_mode(AVOUT_PAL_MODE))
-		return False;
+	    /*if(False == set_lcd_control_mode(AVOUT_PAL_MODE))*/
+		/*return False;*/
 
 	    avout_switch(SET_ON);
 
@@ -236,7 +236,7 @@ int avout_test(struct test_Parameters *test_para)
 	    }
 	    /*sdl_draw_a_pic(test_back_show,NULL,NULL);*/
 	    /*sdl_flip_screen();*/
-	    set_lcd_control_mode(LCD_MODE);
+	    /*set_lcd_control_mode(LCD_MODE);*/
 
 	    avout_switch(SET_OFF);
 	    avout_loop = 0;

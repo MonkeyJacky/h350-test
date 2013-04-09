@@ -32,7 +32,13 @@ static int allocate_ip_random(struct Wifi_parameters *wifi_para)
     debug_print("rand_data is %d\n",rand_data);
 
     sprintf(temp_ip, "192.168.0.%d", rand_data);
-    wifi_para->client_ip = temp_ip;
+    wifi_para->client_ip = malloc(MAX_SIZE);
+    if(!wifi_para->client_ip)
+    {
+	debug_print("client ip malloc error!\n");
+	return False;
+    }
+    memcpy(wifi_para->client_ip,temp_ip,MAX_SIZE);
 
     return True;
 }
@@ -59,16 +65,16 @@ static int init_wifi_driver(struct Wifi_parameters *wifi_para)
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"insmod %s",wifi_para->driver_dir);
     ret |= system(temp_command);
-    sleep(8);
+    sleep(2);
     if(ret < 0)
 	return False;
 
-    memset(temp_command,0,MAX_SIZE);
-    sprintf(temp_command,"ifconfig %s up",wifi_para->network_card);
-    ret |= system(temp_command);
-    sleep(5);
-    if(ret < 0)
-    return False;
+    /*memset(temp_command,0,MAX_SIZE);*/
+    /*sprintf(temp_command,"ifconfig %s up",wifi_para->network_card);*/
+    /*ret |= system(temp_command);*/
+    /*sleep(5);*/
+    /*if(ret < 0)*/
+    /*return False;*/
 
     return True;
 }
@@ -77,6 +83,8 @@ static void deinit_wifi_driver(struct Wifi_parameters *wifi_para)
 {
     char temp_command[MAX_SIZE];
     int ret = 0;
+
+    deep_free(wifi_para->client_ip);
 
     test_words_show("Unloading wifi module...",Bcolor);
     memset(temp_command,0,MAX_SIZE);
@@ -90,7 +98,7 @@ static void deinit_wifi_driver(struct Wifi_parameters *wifi_para)
     usleep(500*1000);
 
     memset(temp_command,0,MAX_SIZE);
-    sprintf(temp_command,"rmmode %s",wifi_para->driver_dir);
+    sprintf(temp_command,"rmmod %s",wifi_para->driver_dir);
     ret |= system(temp_command);
     usleep(500*1000);
 
@@ -101,7 +109,7 @@ static void deinit_wifi_driver(struct Wifi_parameters *wifi_para)
 static int connection_loop(struct Wifi_parameters *wifi_para)
 {
     int ret = -1;
-    char temp_command[MAX_SIZE];
+    char temp_command[MAX_SIZE] = {0};
 
     test_words_show("Searching wifi hotspots...",Bcolor);
     /*memset(temp_command,0,MAX_SIZE);*/
@@ -112,26 +120,28 @@ static int connection_loop(struct Wifi_parameters *wifi_para)
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"%s -Dwext -i%s -c %s -dd &",wifi_para->wpa_supplicant,wifi_para->network_card,wifi_para->conf);
     ret = system(temp_command);
-    sleep(20);
-
-    memset(temp_command,0,MAX_SIZE);
-    sprintf(temp_command,"ifconfig %s %s",wifi_para->network_card,wifi_para->client_ip);
-    ret = system(temp_command);
     sleep(5);
+
+    while(1)
+    {
+	memset(temp_command,0,MAX_SIZE);
+	sprintf(temp_command,"ifconfig %s %s",wifi_para->network_card,wifi_para->client_ip);
+	ret = system(temp_command);
+	if(ret == 0)
+	    break;
+	sleep(2);
+    }
 
     test_words_show("Try to connect...",Bcolor);
     int count = 0;
-    while(ret != 0 && count < CONNECT_TIMES)
+    while(count < CONNECT_TIMES)
     {
-	test_words_show("Try to connect.  ",Bcolor);
-	test_words_show("Try to connect.. ",Bcolor);
-	test_words_show("Try to connect...",Bcolor);
 	memset(temp_command,0,MAX_SIZE);
 	sprintf(temp_command,"ping %s -c 5",wifi_para->host_ip);
 	ret = system(temp_command);
-	PRINT_VALUE(ret,%d);
 	count ++;
     }
+
     if(!ret)
 	return True;
     else

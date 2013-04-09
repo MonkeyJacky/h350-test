@@ -3,7 +3,11 @@
 
 #define WIFI_DEVICE "/proc/jz/wifi_pw"
 #define DRIVER_DIR "res/wifi_modules.ko"
+#ifdef H350
+#define SUPPLICANT_CONFIG_FILE "/mnt/memory/wpa_supplicant.conf"
+#else
 #define SUPPLICANT_CONFIG_FILE "res/wpa_supplicant.conf"
+#endif
 #define WPA_SUPPLICANT "wpa_supplicant"
 #define NETWORK_CARD "wlan0"
 #define HOST_IP "192.168.0.1"

@@ -9,5 +9,6 @@
 #define BLOCK0P4 "/dev/mmcblk0p4"
 
 int internal_card_test(struct test_Parameters *test_para);
+int write_test_file(char* test_file,int write_length);
 
 #endif

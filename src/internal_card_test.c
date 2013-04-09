@@ -8,10 +8,10 @@
 #include "sdl_interface.h"
 #include "debug.h"
 static SDL_Color Bcolor = {0,0,0};
-static void write_test_file(int write_length)
+int write_test_file(char* test_file,int write_length)
 {
     FILE* card_fp = NULL;
-    card_fp = fopen(TEST_FILE,"w+");
+    card_fp = fopen(test_file,"w+");
     char each_write_length[20];
     int return_write = 0;
     int count = 0;
@@ -19,19 +19,24 @@ static void write_test_file(int write_length)
     if(!card_fp)
     {
 	debug_print("open file error!\n");
-	return;
+	return False;
     }
 
     rewind(card_fp);
     do
     {
 	return_write = fwrite(each_write_length,sizeof(unsigned char),sizeof(unsigned char)*20,card_fp);
+	if(return_write != sizeof(unsigned char) * 20)
+	    return False;
+
 	count++;
     }while(return_write*count < write_length);
 
     fflush(card_fp);
     fsync(fileno(card_fp));
     fclose(card_fp);
+
+    return True;
 }
 
 int internal_card_test(struct test_Parameters *test_para)
@@ -45,7 +50,16 @@ int internal_card_test(struct test_Parameters *test_para)
     test_words_show("Writting now...",Bcolor);
     start = SDL_GetTicks();
 #ifdef H350
-    write_test_file(_20MB_);
+    if (write_test_file(TEST_FILE,_20MB_) == False)
+    {
+	system("mkfs.vfat /dev/mmcblk0p4");
+	start = SDL_GetTicks();
+	if(write_test_file(TEST_FILE,_20MB_) == False)
+	{
+	    draw_decision_pic(FAIL);
+	    return False;
+	}
+    }
 #endif
     last = SDL_GetTicks() - start;
     debug_print("%s %d lasttime is %d\n",__FILE__,__LINE__,last);

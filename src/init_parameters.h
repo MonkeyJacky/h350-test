@@ -3,7 +3,11 @@
 
 #include <string.h>
 
+#ifdef H350
+#define CONFIG_FILE "/mnt/memory/test.conf"
+#else
 #define CONFIG_FILE "res/test.conf"
+#endif
 #define False (-1)
 #define True 0
 #define CONTINUE 1
@@ -44,7 +48,11 @@
 #define PASS 0
 #define UNTEST 2
 //*********************************************************
+#ifdef H350
+#define RESULT_CONFIG_FILE "/mnt/memory/result_file.conf"
+#else
 #define RESULT_CONFIG_FILE "res/result_file.conf"
+#endif
 #define JOYSTICK_RESULT "joystick_result"
 #define KEYPAD_RESULT "keypad_result"
 #define HEADPHONE_RESULT "headphone_result"

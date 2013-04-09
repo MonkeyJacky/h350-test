@@ -5,6 +5,7 @@
 #include "tfcard_test.h"
 #include "debug.h"
 #include "sdl_interface.h"
+#include "internal_card_test.h"
 
 static SDL_Color Bcolor = {0,0,0};
 static FILE* tfcard_fp = NULL;
@@ -53,25 +54,50 @@ void deinit_tfcard(void)
 
 static int check_tfcard_info(void)
 {
-    int i;
-    int ok_count = 0;
+    /*int i;*/
+    /*int ok_count = 0;*/
 
-    for(i = 0; i < CHECK_TIMES; i++)
+    /*for(i = 0; i < CHECK_TIMES; i++)*/
+    /*{*/
+	/*if(access(NOTICE_FILE,W_OK) == 0 && access(NOTICE_FILE,R_OK) == 0)*/
+	/*{*/
+	    /*ok_count ++;*/
+	/*}*/
+	/*else*/
+	/*{*/
+	    /*ok_count = 0;*/
+	/*}*/
+    /*}*/
+
+    /*if(ok_count >= ENOUGH_TIMES)*/
+	/*return True;*/
+    /*else*/
+	/*return False;*/
+    int start = 0,last = 0;
+    char tmp_command[MAX_SIZE] = {0};
+    start = SDL_GetTicks();
+#ifdef H350
+    if (write_test_file(NOTICE_FILE,_20MB_) == False)
     {
-	if(access(NOTICE_FILE,W_OK) == 0 && access(NOTICE_FILE,R_OK) == 0)
-	{
-	    ok_count ++;
-	}
-	else
-	{
-	    ok_count = 0;
-	}
+	system("mkfs.vfat /dev/mmcblk1");
+	start = SDL_GetTicks();
+	if(write_test_file(NOTICE_FILE,_20MB_) == False)
+	    return False;
     }
+#endif
+    last = SDL_GetTicks() - start;
+    debug_print("%s %d lasttime is %d\n",__FILE__,__LINE__,last);
+    sprintf(tmp_command,"rm %s",NOTICE_FILE);
+    system(tmp_command);
 
-    if(ok_count >= ENOUGH_TIMES)
+    if(last < 10000 && last > 1000)
+    {
 	return True;
+    }
     else
+    {
 	return False;
+    }
 }
 
 int tfcard_test(struct test_Parameters *test_para)

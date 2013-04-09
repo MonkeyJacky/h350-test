@@ -18,6 +18,7 @@
 #include "moto_test.h"
 #include "usb_test.h"
 #include "gsensor_test.h"
+#include "fm_test.h"
 
 typedef struct{
     char* item_key_word;
@@ -40,6 +41,7 @@ test_orders_ test_order_array[] =
     {"Moto",moto_test},
     {"Usb",udc_test},
     {"Gsensor",gsensor_test},
+    {"FM",fm_test},
 };
 
 void test_loop(struct test_Parameters *test_para,int num,int order_array_size)

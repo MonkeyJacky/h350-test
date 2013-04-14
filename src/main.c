@@ -36,6 +36,7 @@ test_orders_ test_order_array[] =
     {"Internal_Card",internal_card_test},
     {"Hdmi",hdmi_test},
     {"Avout",avout_test},
+    {"Recorder",record_test},
     {"Speaker",speaker_test},
     {"Headphone",hp_test},
     {"Moto",moto_test},

@@ -63,13 +63,21 @@ static int audio_init(void)
 static void deinit_audio(void)
 {
     if(audio_fd)
+    {
 	close(audio_fd);
+	audio_fd = -1;
+    }
 }
 
 static void set_volume(int vol)
 {
     int write_volume;
     int mixer = open(MIXER_DEVICE,O_WRONLY);
+    if(mixer < 0)
+    {
+	debug_print("open %s error!\n",MIXER_DEVICE);
+	return;
+    }
     if(vol > MAX_VOLUME)
 	vol = MAX_VOLUME;
     if(vol < 0)
@@ -84,6 +92,24 @@ static void set_volume(int vol)
 
     if(mixer)
 	close(mixer);
+}
+
+static void set_mic_volume(void)
+{
+    int vol = 0xefef;
+    int mixer_fd = open(MIXER_DEVICE,O_WRONLY);
+    if(mixer_fd == -1)
+    {
+	debug_print("open %s error\n",MIXER_DEVICE);
+	return;
+    }
+
+    if(ioctl(mixer_fd,SOUND_MIXER_WRITE_MIC,&vol) == -1)
+    {
+	debug_print("Failed write mic volume\n");
+    }
+
+    close(mixer_fd);
 }
 
 static int audio_sound_out(char* musicfile)
@@ -169,10 +195,10 @@ int speaker_test(struct test_Parameters *test_para)
 {
     int speaker_test_flag = False;
 #ifdef H350
+    set_volume(100);
+
     if(audio_init() < 0)
 	return False;
-
-    set_volume(100);
 #endif
     test_words_show("Speaker sound test",Bcolor);
     test_words_show("Play now....",Bcolor);
@@ -234,4 +260,93 @@ int hp_test(struct test_Parameters *test_para)
     deinit_audio();
 #endif
     return hp_test_flag;
+}
+//record test
+int start_record(char* record_file)
+{
+    unsigned char audio_buffer[BUF_SIZE] = {0};
+    int len = 0;
+    int bytp_p_sec = 0;
+    FILE *fp_wave;
+    fp_wave = fopen(record_file,"wb");
+    if(!fp_wave)
+	return False;
+    WaveHeader wh;
+    int dsp_speed = RECORDER_SAMPLINGRATE;
+    int dsp_stereo = 1;
+    unsigned long samplesize = 16;
+    int cnt = 0;
+    fwrite(&wh,1,sizeof(WaveHeader),fp_wave);
+
+    wh.main_chunk = RIFF;
+    wh.length= cnt+ sizeof(WaveHeader) - WAVE_RIFF_FLEN;
+    wh.chunk_type = WAVE;
+    wh.sub_chunk = FMT;
+    wh.sc_len = 16;
+    wh.format = PCM_CODE;
+    wh.modus = dsp_stereo ? 2 :1;
+    wh.sample_fq = dsp_speed;
+    wh.byte_p_spl = ( (samplesize == 8) ? 1 : 2) * (dsp_stereo ? 2 :1);
+    bytp_p_sec = wh.byte_p_sec = dsp_speed * wh.modus * wh.byte_p_spl/2;
+
+    wh.bit_p_spl = samplesize;
+    wh.data_chunk = DATA;
+    wh.data_length = cnt;
+    int buffer_len = 0;
+    int run = 1;
+    int cur_time = 0;
+    while(run)
+    {
+	if ((len = read(audio_fd, audio_buffer, BUF_SIZE)) == -1) 
+	{
+	    perror("audio read");
+	    run = 0;
+	}
+
+	buffer_len = fwrite(audio_buffer,1,len,fp_wave);
+	if(buffer_len != len)
+	{
+	    perror("write file error\n");
+	    run = 0;
+	}
+
+	cnt+=len;
+	cur_time = 1*cnt/bytp_p_sec;
+	if(cur_time > RECORD_TIME - 1)//recording 5 seconds
+	    run = 0;
+    }
+
+    wh.length= cnt+ sizeof(WaveHeader) - WAVE_RIFF_FLEN;
+    wh.data_length = cnt;
+    fseek(fp_wave,0,SEEK_SET);
+    fwrite(&wh,1,sizeof(WaveHeader),fp_wave);
+
+    printf("record end\n");
+    fflush(fp_wave);
+    fsync(fileno(fp_wave));
+    fclose(fp_wave);
+    return 0;
+}
+
+int record_test(struct test_Parameters *test_para)
+{
+    test_words_show("Recorder test",Bcolor);
+    set_mic_volume();
+
+    if(audio_init() == False)
+    {
+	debug_print("audio init error!\n");
+	return False;
+    }
+
+    test_words_show("Recording now....Say something",Bcolor);
+    if(start_record(RECORD_FILE) == False)
+	return False;
+
+    test_words_show("Play the recording....",Bcolor);
+    audio_sound_out(RECORD_FILE);
+
+    deinit_audio();
+
+    return decision_loop();
 }

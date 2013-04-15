@@ -8,7 +8,7 @@
 #define MAX_VOLUME 100
 #define WAIT_COUNTS 20
 #define MIXER_DEVICE "/dev/mixer"
-#define SAMPLINGRATE 44100
+#define SAMPLINGRATE 11025
 #define RECORDER_SAMPLINGRATE 8000
 #define DSP_DEVICE "/dev/dsp"
 #define HP_PROC "/proc/jz/hp_l009"

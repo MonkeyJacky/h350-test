@@ -44,19 +44,26 @@ void deinit_fb(int buffer_size)
 
 static int test_cf_init(void)
 {
+    char *test_cf_file = NULL;
     cfg_init_config_file_struct(&test_cf);
-    if(CFG_ERROR == cfg_check_config_file(PRIORITY_CONFIG_FILE))
+
+    if (access(PRIORITY_CONFIG_FILE,F_OK) == 0)
     {
-	if(CFG_ERROR == cfg_check_config_file(CONFIG_FILE))
-	    return CFG_ERROR;
-	if(CFG_ERROR == cfg_read_config_file(&test_cf,CONFIG_FILE))
-	    return CFG_ERROR;
+	test_cf_file = PRIORITY_CONFIG_FILE;
+    }
+    else if(access(CONFIG_FILE,F_OK) == 0)
+    {
+	test_cf_file = CONFIG_FILE;
     }
     else
     {
-	if(CFG_ERROR == cfg_read_config_file(&test_cf,PRIORITY_CONFIG_FILE))
-	    return CFG_ERROR;
+	test_cf_file = LOCAL_CONFIG_FILE;
     }
+
+    if(CFG_ERROR == cfg_check_config_file(test_cf_file))
+	return CFG_ERROR;
+    if(CFG_ERROR == cfg_read_config_file(&test_cf,test_cf_file))
+	return CFG_ERROR;
 
     return CFG_SUCCESS;
 }

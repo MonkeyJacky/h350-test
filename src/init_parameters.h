@@ -9,6 +9,7 @@
 #define CONFIG_FILE "res/test.conf"
 #endif
 #define PRIORITY_CONFIG_FILE "/mnt/mmc/test.conf"
+#define LOCAL_CONFIG_FILE "/boot/res/test.conf"
 #define False (-1)
 #define True 0
 #define CONTINUE 1

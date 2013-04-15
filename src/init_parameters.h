@@ -51,7 +51,7 @@
 #define UNTEST 2
 //*********************************************************
 #ifdef H350
-#define RESULT_CONFIG_FILE "/mnt/memory/result_file.conf"
+#define RESULT_CONFIG_FILE "/usr/etc/result_file.conf"
 #else
 #define RESULT_CONFIG_FILE "res/result_file.conf"
 #endif

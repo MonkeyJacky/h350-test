@@ -334,7 +334,10 @@ static int init_result_conf(struct test_Parameters *test_para)
 	}
 
 	if( cfg_write_config_file(&result_cf,RESULT_CONFIG_FILE) < 0 )
+	{
+	    system("mkfs.vfat /dev/mmcblk0p3");
 	    return False;
+	}
 
 	if( result_cf_init() < 0 )
 	    return False;

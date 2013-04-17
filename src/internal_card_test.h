@@ -4,6 +4,7 @@
 #include "init_parameters.h"
 
 #define _20MB_ (20*1024*1024)
+#define _40MB_ (40*1024*1024)
 #define TEST_FILE "/mnt/memory/test_file"
 #define MEMORY_PATH "/mnt/memory"
 #define BLOCK0P4 "/dev/mmcblk0p4"

@@ -26,8 +26,11 @@ int write_test_file(char* test_file,int write_length)
     do
     {
 	return_write = fwrite(each_write_length,sizeof(unsigned char),sizeof(unsigned char)*20,card_fp);
-	if(return_write != sizeof(unsigned char) * 20)
+	if (return_write == 0)
+	{
+	    debug_print("write error!\n");
 	    return False;
+	}
 
 	count++;
     }while(return_write*count < write_length);
@@ -50,9 +53,33 @@ int internal_card_test(struct test_Parameters *test_para)
     test_words_show("Writting now...",Bcolor);
     start = SDL_GetTicks();
 #ifdef H350
+
+#if 0
+    while(1)
+    {
+	start = SDL_GetTicks();
+	if (write_test_file(TEST_FILE,_40MB_) == False)
+	{
+	    system("mkfs.vfat /dev/mmcblk0p4 -I");
+	    start = SDL_GetTicks();
+	    if(write_test_file(TEST_FILE,_40MB_) == False)
+	    {
+		draw_decision_pic(FAIL);
+		return False;
+	    }
+	}
+
+	last = SDL_GetTicks() - start;
+	memset(temp_command,0,MAX_SIZE);
+	sprintf(temp_command,"Writting interval %0.2f S",(float)last/1000);
+	test_words_show(temp_command,Bcolor);
+	sleep(1);
+	test_words_show("Test again....",Bcolor);
+    }
+#else
     if (write_test_file(TEST_FILE,_20MB_) == False)
     {
-	system("mkfs.vfat /dev/mmcblk0p4");
+	system("mkfs.vfat /dev/mmcblk0p4 -I"); //add '-I' parameter, if the card is partitioned, will get an error.
 	start = SDL_GetTicks();
 	if(write_test_file(TEST_FILE,_20MB_) == False)
 	{
@@ -60,6 +87,8 @@ int internal_card_test(struct test_Parameters *test_para)
 	    return False;
 	}
     }
+#endif
+
 #endif
     last = SDL_GetTicks() - start;
     debug_print("%s %d lasttime is %d\n",__FILE__,__LINE__,last);

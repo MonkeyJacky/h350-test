@@ -48,7 +48,19 @@ Use for H350 board testing. It can work on H350 board and ubuntu OS now (other O
     * Attempts to connect three times, each call to the ping command to determine whether the connection was successful.
 11. Bat-voltage test:
     * The middle of the screen will display the power value read. 
-12. Select Mode:
+12. Internal Card test:
+    * Auto create a file in internal card which is 20MB, passed if the time is over than 1 Second and less than 10 Seconds.
+13. Recorder test:
+    * Promted to record 5 seconds, then will play it over, after this give the test result.
+14. Moto test:
+    * The Moto will work over 3 seconds automatically, after this give the test result.
+15. Usb test:
+    * Prompted to plug in the usb cable, passed if the state is usb mode, failed if the other mode.
+16. Gsensor test:
+    * Prompted to shake the machine to trigger all directions will pass.
+17. FM test:
+    * Prompted to plug in the headphone, then FM will auto search the channel. If a channel is OK, the test will be passed.
+18. Select Mode:
     * There's a list, you can choose the item what you want to test. Using UP and DOWN for moving, A for confirming, B for going on whole test.
 
 

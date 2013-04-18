@@ -12,6 +12,7 @@
 #include "sdl_interface.h"
 #include "key_test.h"
 #include "lcd_test.h"
+#include "sound_test.h"
 
 static SDL_Color Bcolor = {0,0,0};
 static SDL_Surface* test_back_show = NULL;
@@ -112,6 +113,8 @@ static int test_hdmi_loop(struct test_Parameters *test_para)
 	    sleep(2);
 	}
 
+	audio_sound_out(TEST_SOUND);
+
 	set_lcd_control_mode(LCD_MODE);
 
 	hdmi_switch(SET_OFF);
@@ -130,6 +133,9 @@ int hdmi_test(struct test_Parameters *test_para)
 	/*return False;*/
     /*}*/
 #ifdef H350
+    if(audio_init(SAMPLINGRATE, O_WRONLY) < 0)
+	return False;
+
     if(init_fb(test_para->hdmi_info.buffer_size) < 0)
     {
 	draw_decision_pic(FAIL);
@@ -142,6 +148,7 @@ int hdmi_test(struct test_Parameters *test_para)
 	return False;
     }
 
+    deinit_audio();
     deinit_fb(test_para->hdmi_info.buffer_size);
 #endif
     /*deinit_tvout_pic();*/
@@ -203,11 +210,15 @@ int avout_test(struct test_Parameters *test_para)
     test_words_show("Av out test",Bcolor);
 
 #ifdef H350
+    set_volume(100);
     /*if(init_tvout_pic() < 0)*/
     /*{*/
 	/*draw_decision_pic(FAIL);*/
 	/*return False;*/
     /*}*/
+    if(audio_init(SAMPLINGRATE, O_WRONLY) < 0)
+	return False;
+
     if(init_fb(test_para->avout_info.buffer_size) < 0)
     {
 	draw_decision_pic(FAIL);
@@ -234,6 +245,8 @@ int avout_test(struct test_Parameters *test_para)
 		draw_color_bar((unsigned int *)fb,i,test_para->avout_info.width,test_para->avout_info.height);
 		sleep(2);
 	    }
+
+	    audio_sound_out(TEST_SOUND);
 	    /*sdl_draw_a_pic(test_back_show,NULL,NULL);*/
 	    /*sdl_flip_screen();*/
 	    /*set_lcd_control_mode(LCD_MODE);*/
@@ -253,6 +266,7 @@ int avout_test(struct test_Parameters *test_para)
 	usleep(200*1000);
     }
 
+    deinit_audio();
     deinit_av_dev();
     deinit_fb(test_para->avout_info.buffer_size);
     /*deinit_tvout_pic();*/

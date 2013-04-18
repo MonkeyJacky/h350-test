@@ -8,7 +8,7 @@
 #define MAX_VOLUME 100
 #define WAIT_COUNTS 20
 #define MIXER_DEVICE "/dev/mixer"
-#define SAMPLINGRATE 11025
+#define SAMPLINGRATE 44100
 #define RECORDER_SAMPLINGRATE 8000
 #define DSP_DEVICE "/dev/dsp"
 #define HP_PROC "/proc/jz/hp_l009"
@@ -44,5 +44,9 @@ typedef struct _waveheader {
 int speaker_test(struct test_Parameters *test_para);
 int hp_test(struct test_Parameters *test_para);
 int record_test(struct test_Parameters *test_para);
+void set_volume(int vol);
+int audio_sound_out(char* musicfile);
+void deinit_audio(void);
+int audio_init(int sampling_rate, int mode);
 
 #endif

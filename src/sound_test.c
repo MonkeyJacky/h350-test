@@ -15,7 +15,7 @@
 
 static SDL_Color Bcolor = {0,0,0};
 static int audio_fd = -1;
-static int audio_init(int sampling_rate, int mode)
+int audio_init(int sampling_rate, int mode)
 {
     int channels = SOUND_TRACKS;
     int format = AFMT_S16_LE;
@@ -54,7 +54,7 @@ static int audio_init(int sampling_rate, int mode)
     return True;
 }
 
-static void deinit_audio(void)
+void deinit_audio(void)
 {
     if(audio_fd)
     {
@@ -63,7 +63,7 @@ static void deinit_audio(void)
     }
 }
 
-static void set_volume(int vol)
+void set_volume(int vol)
 {
     int write_volume;
     int mixer = open(MIXER_DEVICE,O_WRONLY);
@@ -107,7 +107,7 @@ static void set_mic_volume(void)
 }
 
 #define TEST_BUF 1024
-static int audio_sound_out(char* musicfile)
+int audio_sound_out(char* musicfile)
 {
     FILE *src_music = fopen(musicfile,"r");
     int read_count = 0;

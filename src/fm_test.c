@@ -8,6 +8,7 @@
 #include "fm_test.h"
 #include "debug.h"
 #include "sdl_interface.h"
+#include "sound_test.h"
 
 static SDL_Color Bcolor = {0,0,0};
 int fm_test(struct test_Parameters *test_para)
@@ -17,6 +18,8 @@ int fm_test(struct test_Parameters *test_para)
 
     test_words_show("FM test",Bcolor);
 #ifdef H350
+    set_volume(100);
+
     int fm_fd = open(FM_DEVICE,O_RDWR,0);
     if( fm_fd < 0 ){
 	debug_print("open %s error!\n",FM_DEVICE);

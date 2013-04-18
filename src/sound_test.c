@@ -129,7 +129,7 @@ static int audio_sound_out(char* musicfile)
 	if(ferror(src_music))
 	    return -1;
 	read_count++;
-	if(read_count < 10)
+	if(read_count < 5)//Initially there will be sonic boom.
 	    continue;
 
 	write_num = write(audio_fd,audio_buffer,get_num);
@@ -295,14 +295,11 @@ int start_record(char* record_file)
 	    run = 0;
 	}
 
-	if(cur_time >= 1)
+	buffer_len = fwrite(audio_buffer,len,1,fp_wave);
+	if(buffer_len == 0)
 	{
-	    buffer_len = fwrite(audio_buffer,len,1,fp_wave);
-	    if(buffer_len == 0)
-	    {
-		perror("write file error\n");
-		run = 0;
-	    }
+	    perror("write file error\n");
+	    run = 0;
 	}
 
 	cnt+=len;

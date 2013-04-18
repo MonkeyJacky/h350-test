@@ -53,7 +53,11 @@ static void init_wifi_para(struct Wifi_parameters *wifi_para)
     {
 	wifi_para->client_ip = CLIENT_IP_DEFAULT;
     }
-    wifi_para->conf = SUPPLICANT_CONFIG_FILE;
+
+    if(access(PRIORITY_SUPPLICANT_FILE, F_OK) == 0)
+	wifi_para->conf = PRIORITY_SUPPLICANT_FILE;
+    else
+	wifi_para->conf = SUPPLICANT_CONFIG_FILE;
 }
 
 static int init_wifi_driver(struct Wifi_parameters *wifi_para)

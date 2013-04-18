@@ -15,13 +15,13 @@
 
 static SDL_Color Bcolor = {0,0,0};
 static int audio_fd = -1;
-static int audio_init(void)
+static int audio_init(int sampling_rate, int mode)
 {
     int channels = SOUND_TRACKS;
     int format = AFMT_S16_LE;
-    int speed = SAMPLINGRATE;
+    int speed = sampling_rate;
 
-    if ((audio_fd = open(DSP_DEVICE, O_WRONLY)) < 0) {
+    if ((audio_fd = open(DSP_DEVICE, mode, 0)) < 0) {
 	/* Open of device failed */
 	perror(DSP_DEVICE);
 	return False;
@@ -42,12 +42,6 @@ static int audio_init(void)
     if (ioctl(audio_fd, SNDCTL_DSP_CHANNELS, &channels) == -1) {
 	/* Fatal error */
 	perror("SNDCTL_DSP_CHANNELS");
-	return False;
-    }
-
-    if (channels != SOUND_TRACKS)
-    {/* do not support stereo... */
-	debug_print("the channels set error!\n");
 	return False;
     }
 
@@ -96,7 +90,7 @@ static void set_volume(int vol)
 
 static void set_mic_volume(void)
 {
-    int vol = 0xefef;
+    int vol = 100;
     int mixer_fd = open(MIXER_DEVICE,O_WRONLY);
     if(mixer_fd == -1)
     {
@@ -112,11 +106,12 @@ static void set_mic_volume(void)
     close(mixer_fd);
 }
 
+#define TEST_BUF 1024
 static int audio_sound_out(char* musicfile)
 {
     FILE *src_music = fopen(musicfile,"r");
     int read_count = 0;
-    char audio_buffer[BUF_SIZE] = {0};
+    char audio_buffer[TEST_BUF] = {0};
     int get_num = 0;
     int write_num = 0;
 
@@ -130,20 +125,17 @@ static int audio_sound_out(char* musicfile)
 
     while(feof(src_music)==0)
     {
-	get_num = fread(audio_buffer,1,BUF_SIZE,src_music);
+	get_num = fread(audio_buffer,1,TEST_BUF,src_music);
+	if(ferror(src_music))
+	    return -1;
 	read_count++;
 	if(read_count < 10)
 	    continue;
 
 	write_num = write(audio_fd,audio_buffer,get_num);
-	if(write_num != get_num)
+	if(write_num == 0)
 	{
 	    debug_print("write audio error\n");
-	    break;
-	}
-
-	if(get_num != BUF_SIZE)
-	{
 	    break;
 	}
     }
@@ -197,7 +189,7 @@ int speaker_test(struct test_Parameters *test_para)
 #ifdef H350
     set_volume(100);
 
-    if(audio_init() < 0)
+    if(audio_init(SAMPLINGRATE, O_WRONLY) < 0)
 	return False;
 #endif
     test_words_show("Speaker sound test",Bcolor);
@@ -221,7 +213,7 @@ int hp_test(struct test_Parameters *test_para)
     int audio_out_count = 0;
 
 #ifdef H350
-    if(audio_init() < 0 || init_headphone() < 0)
+    if(audio_init(SAMPLINGRATE, O_WRONLY) < 0 || init_headphone() < 0)
 	return False;
 
     set_volume(70);
@@ -276,7 +268,7 @@ int start_record(char* record_file)
     int dsp_stereo = 1;
     unsigned long samplesize = 16;
     int cnt = 0;
-    fwrite(&wh,1,sizeof(WaveHeader),fp_wave);
+    fwrite(&wh,sizeof(WaveHeader),1,fp_wave);
 
     wh.main_chunk = RIFF;
     wh.length= cnt+ sizeof(WaveHeader) - WAVE_RIFF_FLEN;
@@ -303,11 +295,14 @@ int start_record(char* record_file)
 	    run = 0;
 	}
 
-	buffer_len = fwrite(audio_buffer,1,len,fp_wave);
-	if(buffer_len != len)
+	if(cur_time >= 1)
 	{
-	    perror("write file error\n");
-	    run = 0;
+	    buffer_len = fwrite(audio_buffer,len,1,fp_wave);
+	    if(buffer_len == 0)
+	    {
+		perror("write file error\n");
+		run = 0;
+	    }
 	}
 
 	cnt+=len;
@@ -319,7 +314,7 @@ int start_record(char* record_file)
     wh.length= cnt+ sizeof(WaveHeader) - WAVE_RIFF_FLEN;
     wh.data_length = cnt;
     fseek(fp_wave,0,SEEK_SET);
-    fwrite(&wh,1,sizeof(WaveHeader),fp_wave);
+    fwrite(&wh,sizeof(WaveHeader),1,fp_wave);
 
     printf("record end\n");
     fflush(fp_wave);
@@ -331,22 +326,30 @@ int start_record(char* record_file)
 int record_test(struct test_Parameters *test_para)
 {
     test_words_show("Recorder test",Bcolor);
+
     set_mic_volume();
 
-    if(audio_init() == False)
+    if(audio_init(RECORDER_SAMPLINGRATE, O_RDONLY) == False)
     {
 	debug_print("audio init error!\n");
 	return False;
     }
-
     test_words_show("Recording now....Say something",Bcolor);
     if(start_record(RECORD_FILE) == False)
 	return False;
+    deinit_audio();
 
+    set_volume(100);
+    if(audio_init(RECORDER_SAMPLINGRATE, O_WRONLY) == False)
+    {
+	debug_print("audio init error!\n");
+	return False;
+    }
     test_words_show("Play the recording....",Bcolor);
     audio_sound_out(RECORD_FILE);
-
     deinit_audio();
+
+    remove(RECORD_FILE);
 
     return decision_loop();
 }

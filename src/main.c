@@ -111,13 +111,11 @@ int main(void)
     result_show(&test_para);
     press_A_go_on();
 #ifdef H350
+    flush_screen(0);
     deinit_key_pad();
 #endif
     deinit_res(&test_para);
     deinit_result_conf();
     deinit_sdl();
-#ifdef H350
-    flush_screen(0);
-#endif
     return 0;
 }

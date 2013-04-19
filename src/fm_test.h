@@ -10,8 +10,8 @@
 #define FM_DEVICE "/dev/fm_rda5807p"
 #define MAX_SEARCHING_COUNT 3
 enum FM_FREQUENCY_RANGE{
-    MIN_FREQUENCY = 1100,
-    MAX_FREQUENCY = 1200,
+    MIN_FREQUENCY = 870,
+    MAX_FREQUENCY = 1080,
 };
 
 int fm_test(struct test_Parameters *test_para);

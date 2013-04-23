@@ -48,5 +48,9 @@ void set_volume(int vol);
 int audio_sound_out(char* musicfile);
 void deinit_audio(void);
 int audio_init(int sampling_rate, int mode);
+void enable_fm(int mode);
+int hp_detect(void);
+void deinit_headphone(void);
+int init_headphone(void);
 
 #endif

@@ -146,9 +146,9 @@ int audio_sound_out(char* musicfile)
 }
 
 static FILE* hp_fp = NULL;
-static int init_headphone(void)
+int init_headphone(void)
 {
-    hp_fp = fopen(HP_PROC,"rb");
+    hp_fp = fopen(HP_PROC,"rw");
     if(!hp_fp)
     {
 	debug_print("can not open hp!\n");
@@ -158,7 +158,14 @@ static int init_headphone(void)
     return True;
 }
 
-static void deinit_headphone(void)
+void enable_fm(int mode)
+{
+    char temp_command[MAX_SIZE] = {0};
+    sprintf(temp_command,"echo %d > %s",mode,HP_PROC);
+    system(temp_command);
+}
+
+void deinit_headphone(void)
 {
     if(hp_fp)
     {
@@ -167,7 +174,7 @@ static void deinit_headphone(void)
     }
 }
 
-static int hp_detect(void)
+int hp_detect(void)
 {
     char buf[10] = {0};
     int n = 0;

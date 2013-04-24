@@ -8,6 +8,17 @@
 #include "key_test.h"
 /*************************lcd test***************************/
 static SDL_Color Bcolor = {0,0,0};
+static SDL_Surface* lcd_test_pic = NULL;
+void init_lcd_test_pic(void)
+{
+	lcd_test_pic = IMG_Load(TEST_PIC);
+}
+
+void deinit_lcd_test_pic(void)
+{
+	sdl_free_surface(lcd_test_pic);
+}
+
 void flush_screen(int mode)
 {
 	char buff[32] = {0};
@@ -74,6 +85,8 @@ int lcd_test(struct test_Parameters *test_para)
 
     PRINT_VALUE(test_para->screen_info.buffer_size,"%d");
 #ifdef H350
+    init_lcd_test_pic();
+
     if(init_fb(test_para->screen_info.buffer_size) < 0)
     {
 	draw_decision_pic(FAIL);
@@ -86,10 +99,14 @@ int lcd_test(struct test_Parameters *test_para)
 	sleep(2);
     }
 
+    sdl_draw_a_pic(lcd_test_pic,NULL,NULL);
+    sleep(2);
+
     for(i = 20; i < 100; i += 20) // change backlight 20 values each.
 	adjust_backlight(i);
 
     deinit_fb(test_para->screen_info.buffer_size);
+    deinit_lcd_test_pic();
 #endif
     /*return decision_warning_show();*/
     return decision_loop();

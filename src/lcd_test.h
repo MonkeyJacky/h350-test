@@ -4,6 +4,7 @@
 #include "init_parameters.h"
 #define BACKLIGHT_DEV "/proc/jz/lcd_backlight"
 #define FLUSH_DEVICE "/proc/jz/lcd_flush"
+#define TEST_PIC "res/test_pic.png"
 
 int lcd_test(struct test_Parameters *test_para);
 

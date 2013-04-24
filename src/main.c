@@ -43,6 +43,7 @@ test_orders_ test_order_array[] =
     {"Usb",udc_test},
     {"Gsensor",gsensor_test},
     {"FM",fm_test},
+    {"OTG",otg_test_loop},
 };
 
 void test_loop(struct test_Parameters *test_para,int num,int order_array_size)

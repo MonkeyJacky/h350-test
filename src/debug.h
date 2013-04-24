@@ -4,9 +4,9 @@
 #define DEBUG
 #ifdef DEBUG
 #define debug_print(x,...)\
-	printf(x,##__VA_ARGS__);
+	printf(x,##__VA_ARGS__)
 #define debug_print_s(x,...)\
-        printf("%s() :%d "x"\n",__func__,__LINE__,##__VA_ARGS__);
+        printf("%s() :%d "x"\n",__func__,__LINE__,##__VA_ARGS__)
 #else
 #define debug_print_s(x,...)
 #define debug_print(x,...) 

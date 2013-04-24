@@ -79,7 +79,9 @@ static int check_tfcard_info(void)
 #ifdef H350
     if (write_test_file(NOTICE_FILE,_20MB_) == False)
     {
+	system("umount /mnt/mmc");
 	system("mkfs.vfat /dev/mmcblk1");
+	system("mount /dev/mmcblk1 /mnt/mmc");
 	start = SDL_GetTicks();
 	if(write_test_file(NOTICE_FILE,_20MB_) == False)
 	    return False;

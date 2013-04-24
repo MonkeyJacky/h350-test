@@ -79,7 +79,9 @@ int internal_card_test(struct test_Parameters *test_para)
 #else
     if (write_test_file(TEST_FILE,_20MB_) == False)
     {
+	system("unmount /mnt/memory/");
 	system("mkfs.vfat /dev/mmcblk0p4 -I"); //add '-I' parameter, if the card is partitioned, will get an error.
+	system("mount /dev/mmcblk0p4 /mnt/memory");
 	start = SDL_GetTicks();
 	if(write_test_file(TEST_FILE,_20MB_) == False)
 	{

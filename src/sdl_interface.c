@@ -259,7 +259,11 @@ int init_sdl(struct test_Parameters *test_para)
 //when we draw a shape we must init this
 void sdl_draw_a_pic(SDL_Surface* img, SDL_Rect *src_rect, SDL_Rect *dst_rect)
 {
-    SDL_BlitSurface(img,src_rect,screen,dst_rect);
+    if(img)
+    {
+	SDL_BlitSurface(img,src_rect,screen,dst_rect);
+	SDL_Flip(screen);
+    }
 }
 
 void sdl_set_pen(SDL_Color *color, int w)

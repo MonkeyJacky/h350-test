@@ -505,3 +505,107 @@ int gsensor_test_loop(struct test_Parameters *test_para)
 
     return True;
 }
+
+//****************otg test interface******************
+FILE* otg_fp = NULL;
+static int init_otg_dev(void)
+{
+    otg_fp = fopen(OTG_DETECT_PROC,"rb");
+    if(!otg_fp)
+    {
+	debug_print("otg detect dev open error!\n");
+	return False;
+    }
+
+    return True;
+}
+
+static void deinit_otg_dev()
+{
+    if(otg_fp)
+	fclose(otg_fp);
+}
+
+static int get_otg_detect_mode()
+{
+    char buf[11];
+    int value = 0;
+    if(otg_fp)
+    {
+	rewind(otg_fp);
+	fgets(buf,11,otg_fp);
+	sscanf(buf,"%d",&value);
+    }
+    return value;
+}
+
+static int show_otg_device_name()
+{
+    char buffer[MAX_SIZE] = {0};
+    int fd = -1;
+    int read_len = 0;
+    int otg_count = (get_otg_detect_mode() & 0x7fffffff) - 1;
+
+    sprintf(buffer, "/sys/class/input/input%d/name",otg_count);
+    debug_print("otg dev is %s\n",buffer);
+    fd = open(buffer,O_RDONLY);
+    if(fd < 0)
+    {
+	debug_print("open otg product name dev error!\n");
+	return False;
+    }
+
+    memset(buffer,0,MAX_SIZE);
+    read_len = read(fd,buffer,MAX_SIZE);
+    if(read_len < 0)
+    {
+	debug_print("read otg dev error!\n");
+	return False;
+    }
+
+    buffer[strlen(buffer) - 1] = '\0';
+    test_words_show(buffer,Bcolor);
+    sleep(1);
+    close(fd);
+
+    return True;
+}
+
+static int check_otg_file_read()
+{
+    if (get_otg_detect_mode() & 0x80000000)
+    {
+	sleep(1);
+	if(show_otg_device_name() < 0)
+	    return False;
+	else
+	    return True;
+    }
+    else
+	return False;
+}
+
+int otg_test_loop(struct test_Parameters *test_par)
+{
+    int otg_loop = 1;
+
+    test_words_show("Otg test",Bcolor);
+#ifdef H350
+    if(init_otg_dev() < 0)
+	return False;
+
+    while(otg_loop)
+    {
+	usleep(200*1000);
+	if(check_otg_file_read() == True)
+	{
+	    otg_loop = 0;
+	}
+    }
+
+    deinit_otg_dev();
+#endif
+
+    draw_decision_pic(PASS);
+    return True;
+}

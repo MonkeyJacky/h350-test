@@ -62,11 +62,23 @@ void test_loop(struct test_Parameters *test_para,int num,int order_array_size)
     }
 }
 
+static void formatting_card()
+{
+    int ret = 0;
+    ret = system("unmount /mnt/memory/");
+    if(ret != 0)
+    {
+	system("mkfs.vfat /dev/mmcblk0p4 -I");
+    }
+    system("mount /dev/mmcblk0p4 /mnt/memory");
+}
+
 int main(void)
 {
     struct test_Parameters test_para;
     int i;
     int test_order_array_size = 0;
+    formatting_card();
 
     if (init_res(&test_para) < 0)
 	exit(0);
@@ -109,8 +121,8 @@ int main(void)
 	debug_print("Get test order num error!\n");
     }
 
-    result_show(&test_para);
-    press_A_go_on();
+    /*result_show(&test_para);*/
+    /*press_A_go_on();*/
 #ifdef H350
     flush_screen(0);
     deinit_key_pad();

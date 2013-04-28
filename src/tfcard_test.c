@@ -124,7 +124,7 @@ int tfcard_test(struct test_Parameters *test_para)
 	    {
 		if(once)
 		{
-		    sleep(1);
+		    test_words_show("Test tfcard now...",Bcolor);
 		    tfcard_flag = check_tfcard_info();
 		    once = 0;
 		    if(tfcard_flag == False)

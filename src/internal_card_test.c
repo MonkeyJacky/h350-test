@@ -12,10 +12,13 @@ int write_test_file(char* test_file,int write_length)
 {
     FILE* card_fp = NULL;
     card_fp = fopen(test_file,"w+");
-    char each_write_length[20];
+    char each_write_length[11];
     int return_write = 0;
     int count = 0;
+
     sprintf(each_write_length,"justfortest");
+    int write_len = strlen(each_write_length);
+
     if(!card_fp)
     {
 	debug_print("open file error!\n");
@@ -25,7 +28,7 @@ int write_test_file(char* test_file,int write_length)
     rewind(card_fp);
     do
     {
-	return_write = fwrite(each_write_length,sizeof(unsigned char),sizeof(unsigned char)*20,card_fp);
+	return_write = fwrite(each_write_length,1,write_len,card_fp);
 	if (return_write == 0)
 	{
 	    debug_print("write error!\n");
@@ -33,12 +36,11 @@ int write_test_file(char* test_file,int write_length)
 	}
 
 	count++;
-    }while(return_write*count < write_length);
+    }while(return_write*count <= write_length);
 
     fflush(card_fp);
     fsync(fileno(card_fp));
     fclose(card_fp);
-
     return True;
 }
 

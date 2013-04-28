@@ -263,6 +263,7 @@ int cfg_write_config_file(ConfigFile *cf, char *filename)
 	file = fopen(filename, "w");
 	if (file) {
 		while (i < cf->lastkey) {
+			memset(buffer,0,MAX_LINE_LENGTH);
 			snprintf(buffer, MAX_LINE_LENGTH, "%s=%s\n", cf->key[i], cf->value[i]);
 			if (!fwrite(buffer, strlen(buffer) * sizeof(char), 1, file)) {
 				result = CFG_ERROR;

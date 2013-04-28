@@ -59,11 +59,13 @@ int fm_test(struct test_Parameters *test_para)
 		ioctl(fm_fd,FM_SET_FREQ,&freq);
 		sleep(5);
 	    }
+	    else
+		fm_loop = 0;
 
 	    ioctl(fm_fd,FM_POWER_OFF,NULL);
 
 	    close(fm_fd);
-	    while(hp_detect() != 0)
+	    while(hp_detect() != 0 && fm_flag == True)
 	    {
 		test_words_show("Please plug out the headphone...",Bcolor);
 	    }

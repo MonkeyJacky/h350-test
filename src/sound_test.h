@@ -15,7 +15,7 @@
 #define TEST_SOUND "res/test_sound.wav"
 #define RECORD_FILE "/mnt/memory/record_file.wav"
 
-#define RECORD_TIME 5
+#define RECORD_TIME 3
 #define	RIFF 0x46464952	
 #define	WAVE 0x45564157
 #define	FMT 0x20746D66

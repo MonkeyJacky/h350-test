@@ -317,7 +317,7 @@ int start_record(char* record_file)
 
 	cnt+=len;
 	cur_time = 1*cnt/bytp_p_sec;
-	if(cur_time > RECORD_TIME - 1)//recording 5 seconds
+	if(cur_time > RECORD_TIME - 1)//recording 3 seconds
 	    run = 0;
     }
 
@@ -344,7 +344,9 @@ int record_test(struct test_Parameters *test_para)
 	debug_print("audio init error!\n");
 	return False;
     }
-    test_words_show("Recording now....Say something",Bcolor);
+    test_words_show("Press any key to record....",Bcolor);
+    wait_for_next();
+    test_words_show("Recording now...",Bcolor);
     if(start_record(RECORD_FILE) == False)
 	return False;
     deinit_audio();

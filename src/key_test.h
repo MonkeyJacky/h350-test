@@ -8,6 +8,7 @@
 
 int key_test(struct test_Parameters *test_para);
 
+void wait_for_next(void);
 int press_B_to_quit(void);
 int joystick_test(struct test_Parameters *test_para);
 void init_key_pad(void);

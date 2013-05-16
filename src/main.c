@@ -101,6 +101,7 @@ int main(void)
     }
 
     test_order_array_size = sizeof(test_order_array) / sizeof(test_orders_);
+    debug_print("test order array size is %d\n",test_order_array_size);
 #ifdef H350
     flush_screen(1);
 #endif
@@ -108,6 +109,7 @@ int main(void)
     {
 	if(test_para.select_mode == True)
 	{
+	    debug_print("test_offset is %d\n",test_para.test_offset);
 	    test_loop(&test_para,test_para.test_offset,test_order_array_size);
 	}
 	else

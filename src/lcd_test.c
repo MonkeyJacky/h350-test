@@ -96,11 +96,11 @@ int lcd_test(struct test_Parameters *test_para)
     for(i = 0; i < 3; i++) // 3 kind of colors.
     {
 	draw_color_bar((unsigned int *)fb,i,test_para->screen_info.width,test_para->screen_info.height);
-	sleep(2);
+	wait_for_next();
     }
 
     sdl_draw_a_pic(lcd_test_pic,NULL,NULL);
-    sleep(2);
+    wait_for_next();
 
     for(i = 20; i < 100; i += 20) // change backlight 20 values each.
 	adjust_backlight(i);
@@ -111,5 +111,4 @@ int lcd_test(struct test_Parameters *test_para)
     /*return decision_warning_show();*/
     return decision_loop();
 }
-
 

@@ -127,7 +127,11 @@ int audio_sound_out(char* musicfile)
     {
 	get_num = fread(audio_buffer,1,TEST_BUF,src_music);
 	if(ferror(src_music))
+	{
+	    fclose(src_music);
 	    return -1;
+	}
+
 	read_count++;
 	if(read_count < 5)//Initially there will be sonic boom.
 	    continue;

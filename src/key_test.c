@@ -560,6 +560,7 @@ static int show_otg_device_name()
     if(read_len < 0)
     {
 	debug_print("read otg dev error!\n");
+	close(fd);
 	return False;
     }
 

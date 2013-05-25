@@ -21,14 +21,14 @@ void sdl_flip_screen(void)
     SDL_Flip(screen);
 }
 
-void sdl_free_surface(SDL_Surface* obj_surface)
-{
-    if(obj_surface)
-    {
-	SDL_FreeSurface(obj_surface);
-	obj_surface = NULL;
-    }
-}
+/*void sdl_free_surface(SDL_Surface* obj_surface)*/
+/*{*/
+    /*if(obj_surface)*/
+    /*{*/
+	/*SDL_FreeSurface(obj_surface);*/
+	/*obj_surface = NULL;*/
+    /*}*/
+/*}*/
 
 void draw_decision_pic(int sel)
 {

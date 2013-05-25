@@ -9,6 +9,14 @@
 #define FONT_PATH "res/l009.ttf"
 #define PAGE_MAX_ITEM 11
 
+#define sdl_free_surface(x)		\
+    do {				\
+	if (x){				\
+	    SDL_FreeSurface(x);		\
+	    x = NULL;			\
+	}				\
+    } while (0)
+
 struct _result_res{
     SDL_Color Fail_color;
     SDL_Color Pass_color;
@@ -23,7 +31,7 @@ int init_sdl(struct test_Parameters *test_para);
 void deinit_sdl(void);
 void draw_decision_pic(int sel);
 SDL_Surface* load_image(char* img_path);
-void sdl_free_surface(SDL_Surface* obj_surface);
+//void sdl_free_surface(SDL_Surface* obj_surface);
 void test_words_show(const char* temp_str, SDL_Color color);
 void sdl_draw_a_pic(SDL_Surface* img, SDL_Rect *src_rect, SDL_Rect *dst_rect);
 void sdl_flip_screen(void);

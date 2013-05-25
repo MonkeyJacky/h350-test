@@ -103,7 +103,7 @@ int main(void)
     test_order_array_size = sizeof(test_order_array) / sizeof(test_orders_);
     debug_print("test order array size is %d\n",test_order_array_size);
 #ifdef H350
-    flush_screen(1);
+    /*flush_screen(1);*/
 #endif
     if(test_para.total_num > 0 && test_para.total_num <= test_order_array_size)
     {
@@ -126,7 +126,7 @@ int main(void)
     /*result_show(&test_para);*/
     /*press_A_go_on();*/
 #ifdef H350
-    flush_screen(0);
+    /*flush_screen(0);*/
     deinit_key_pad();
 #endif
     deinit_res(&test_para);

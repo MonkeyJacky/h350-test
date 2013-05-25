@@ -173,8 +173,11 @@ int cfg_add_key(ConfigFile *cf, char *key, char *value)
 
 /* Frees all memory allocated by read_config_file() */
 #define deep_free(tmp)\
-if(tmp)free(tmp);\
-tmp = NULL;
+    do{\
+	if(tmp){free(tmp);\
+	    tmp = NULL;\
+	}\
+    }while(0)
 
 void cfg_free_config_file_struct(ConfigFile *cf)
 {

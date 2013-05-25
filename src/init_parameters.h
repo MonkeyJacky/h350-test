@@ -38,9 +38,13 @@
 #define HDMI_SCREEN_HEIGHT "hdmi_screen_height"
 #define AVOUT_SCREEN_WIDTH "avout_screen_width"
 #define AVOUT_SCREEN_HEIGHT "avout_screen_height"
-#define deep_free(x)\
-	free(x);\
-	x = NULL;
+#define deep_free(x)	\
+    do{			\
+	if (x){		\
+	    free(x);	\
+	    x = NULL;	\
+	}		\
+    }while(0)
 #define WHITE_BACKGROUND "res/white_back.png"
 #define PASS_VIEW "res/test_success.png"
 #define FAIL_VIEW "res/test_fail.png"

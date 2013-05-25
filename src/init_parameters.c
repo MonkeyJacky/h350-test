@@ -263,10 +263,9 @@ void deinit_res(struct test_Parameters *test_para)
 	deep_free(test_para->test_order[i]);
     deep_free(test_para->test_order);
 
-    //TODO there is a free error.
-    /*for(i = 0; i<test_para->result_view_para.array_size; i++)*/
-	/*deep_free(test_para->result_view_para.result_words[i]);*/
-    /*deep_free(test_para->result_view_para.result_words);*/
+    for(i = 0; i<test_para->result_view_para.array_size; i++)
+	deep_free(test_para->result_view_para.result_words[i]);
+    deep_free(test_para->result_view_para.result_words);
 
     deep_free(test_para->result_flag);
     deep_free(test_para->key_rect_array.x);

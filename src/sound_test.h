@@ -13,7 +13,7 @@
 #define DSP_DEVICE "/dev/dsp"
 #define HP_PROC "/proc/jz/hp_l009"
 #define TEST_SOUND "res/test_sound.wav"
-#define RECORD_FILE "/mnt/memory/record_file.wav"
+#define RECORD_FILE "/tmp/record_file.wav"
 
 #define RECORD_TIME 3
 #define	RIFF 0x46464952	

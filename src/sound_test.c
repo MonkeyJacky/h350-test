@@ -274,7 +274,7 @@ int start_record(char* record_file)
     fp_wave = fopen(record_file,"wb");
     if(!fp_wave)
     {
-	system("mkfs.vfat /dev/mmcblk0p4 -I");
+	/*system("mkfs.vfat /dev/mmcblk0p4 -I");*/
 	fp_wave = NULL;
 	fp_wave = fopen(record_file,"wb");
 	if(!fp_wave)

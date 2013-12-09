@@ -63,7 +63,7 @@ static void init_wifi_para(struct Wifi_parameters *wifi_para)
 static int init_wifi_driver(struct Wifi_parameters *wifi_para)
 {
     char temp_command[MAX_SIZE];
-    int ret = -1;
+    int ret = True;
 
     test_words_show("Loading wifi module...",Bcolor);
     memset(temp_command,0,MAX_SIZE);
@@ -73,12 +73,12 @@ static int init_wifi_driver(struct Wifi_parameters *wifi_para)
     if(ret < 0)
 	return False;
 
-    /*memset(temp_command,0,MAX_SIZE);*/
-    /*sprintf(temp_command,"ifconfig %s up",wifi_para->network_card);*/
-    /*ret |= system(temp_command);*/
-    /*sleep(5);*/
-    /*if(ret < 0)*/
-    /*return False;*/
+    memset(temp_command,0,MAX_SIZE);
+    sprintf(temp_command,"ifconfig %s up",wifi_para->network_card);
+    ret |= system(temp_command);
+    sleep(2);
+    if(ret < 0)
+	return False;
 
     return True;
 }
@@ -116,11 +116,59 @@ static int connection_loop(struct Wifi_parameters *wifi_para)
     char temp_command[MAX_SIZE] = {0};
 
     test_words_show("Searching wifi hotspots...",Bcolor);
-    /*memset(temp_command,0,MAX_SIZE);*/
-    /*sprintf(temp_command,"iwlist %s scanning",wifi_para->network_card);*/
-    /*ret = system(temp_command);*/
-    /*sleep(1);*/
+    memset(temp_command,0,MAX_SIZE);
+    sprintf(temp_command,"iwlist %s scanning > %s",wifi_para->network_card,ROUTES_LIST_FILE);
+    ret = system(temp_command);
+    sleep(5);
 
+    FILE* fp = NULL;
+    fp = fopen(ROUTES_LIST_FILE,"r");
+    if(!fp)
+    {
+	return False;
+    }
+
+    char cha = 0;
+    char *routesFileContents = NULL;
+    int i = 0;
+    int length = 0;
+
+    fseek(fp,0,SEEK_END);
+    length = ftell(fp);
+    routesFileContents = malloc(length);
+    if (!routesFileContents)
+    {
+	fclose(fp);
+	return False;
+    }
+    memset(routesFileContents, 0, length);
+
+    rewind(fp);
+    while(1)
+    {
+	while(!feof(fp))
+	{
+	    cha = fgetc(fp);
+	    routesFileContents[i++] = cha;
+	}
+
+	if(!strstr(routesFileContents,ROUTES_LABEL))
+	{
+	    ret = False;
+	    break;
+	}
+	else
+	{
+	    ret = True;
+	    break;
+	}
+    }
+
+    fclose(fp);
+    deep_free(routesFileContents);
+    remove(ROUTES_LIST_FILE);
+
+#if 0
     memset(temp_command,0,MAX_SIZE);
     sprintf(temp_command,"%s -Dwext -i%s -c %s -dd &",wifi_para->wpa_supplicant,wifi_para->network_card,wifi_para->conf);
     ret = system(temp_command);
@@ -145,6 +193,7 @@ static int connection_loop(struct Wifi_parameters *wifi_para)
 	ret = system(temp_command);
 	count ++;
     }
+#endif
 
     if(!ret)
 	return True;
@@ -164,9 +213,9 @@ int wifi_test(struct test_Parameters *test_para)
     debug_print("client ip is %s\n",wifi_para.client_ip);
     test_words_show("Wifi test",Bcolor);
 #ifdef H350
-    init_wifi_driver(&wifi_para);
+    ret |= init_wifi_driver(&wifi_para);
 
-    ret = connection_loop(&wifi_para);
+    ret |= connection_loop(&wifi_para);
 
     deinit_wifi_driver(&wifi_para);
 #endif

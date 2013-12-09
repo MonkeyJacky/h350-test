@@ -14,6 +14,8 @@
 #define CLIENT_IP_DEFAULT "192.168.0.2"
 #define CONNECT_TIMES 5
 #define PRIORITY_SUPPLICANT_FILE "/mnt/mmc/wpa_supplicant.conf"
+#define ROUTES_LIST_FILE "/tmp/routes_list"
+#define ROUTES_LABEL "ESSID:"
 
 struct Wifi_parameters{
     char *wifi_device;
@@ -23,6 +25,7 @@ struct Wifi_parameters{
     char *client_ip;
     char *conf;
     char *wpa_supplicant;
+    char *routes_label;
 };
 
 int wifi_test();

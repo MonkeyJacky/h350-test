@@ -231,6 +231,7 @@ int avout_test(struct test_Parameters *test_para)
 	return False;
     }
 
+    test_words_show("Please plug in AV cable!",Bcolor);
     while(avout_loop)
     {
 	if(get_av_out_mode() == SET_ON)
